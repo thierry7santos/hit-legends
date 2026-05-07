@@ -1,0 +1,231 @@
+/* ============================= */
+/* LAYOUT BASE */
+/* ============================= */
+
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,200,0,0.08), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255,200,0,0.05), transparent 40%),
+    linear-gradient(180deg, #0a0a0a, #050505);
+}
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+.sidebar {
+  position: relative;
+  width: 50px;
+  background: hsl(var(--sidebar-background));
+  border-right: 1px solid hsl(var(--border));
+  transition: width 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.sidebar.open {
+  width: 220px;
+}
+
+/* LOGO FUNDO */
+.sidebar::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%) scale(1.0);
+
+  width: 300px;
+  height: 300px;
+
+  background: var(--sidebar-bg) no-repeat center;
+  background-size: contain;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  pointer-events: none;
+}
+
+.sidebar.open::after {
+  opacity: 0.35;
+}
+
+/* ============================= */
+/* EFEITO SUTIL (AURA) */
+/* ============================= */
+
+.sidebar-effects {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* brilho base parado */
+.sidebar-effects::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: radial-gradient(
+    circle at 50% 100%,
+    rgba(255, 200, 0, 0.18),
+    transparent 65%
+  );
+
+  opacity: 0.6;
+}
+
+/* pulsação suave */
+.sidebar-effects::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: radial-gradient(
+    circle at 50% 100%,
+    rgba(255, 200, 0, 0.25),
+    transparent 60%
+  );
+
+  animation: auraPulse 6s ease-in-out infinite;
+}
+
+/* animação leve */
+@keyframes auraPulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+/* ============================= */
+/* HEADER SIDEBAR */
+/* ============================= */
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.logo {
+  color: hsl(var(--primary));
+  font-weight: bold;
+}
+
+.pin-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* ============================= */
+/* NAV */
+/* ============================= */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1;
+}
+
+.nav-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255,200,0,0.08);
+  box-shadow: 0 0 10px rgba(255,200,0,0.15);
+}
+
+.nav-item.active {
+  background: hsl(var(--sidebar-accent));
+  box-shadow: 0 0 12px rgba(255,200,0,0.2);
+}
+
+/* ============================= */
+/* TOPBAR */
+/* ============================= */
+
+.topbar {
+  height: 60px;
+  border-bottom: 1px solid hsl(var(--border));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background: rgba(10,10,10,0.6);
+  backdrop-filter: blur(10px);
+}
+
+/* ============================= */
+/* USER */
+/* ============================= */
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  color: hsl(var(--primary));
+  transform: scale(1.1);
+}
+
+/* ============================= */
+/* MAIN */
+/* ============================= */
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+}

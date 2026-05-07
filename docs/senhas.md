@@ -1,0 +1,7 @@
+Senhas do Projeto:
+
+Supabase:
+Login: thierry7santos@gmail.com (por gmail )
+Database senha:FdGLAluWz5u3WVLk
+URL do projeto: https://lhttntovknzawcxcmkom.supabase.co
+Ano public: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxodHRudG92a256YXdjeGNta29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MjEzNDEsImV4cCI6MjA5MzM5NzM0MX0.cRU-L2L_B9_jEYUP7AFU-q3IrWFI_BbBu7kDtEldTUs

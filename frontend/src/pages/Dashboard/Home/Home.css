@@ -1,0 +1,123 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 🔥 BANNER */
+.home-banner {
+  height: 180px;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(120deg, rgba(255,200,0,0.15), transparent),
+    rgba(255,255,255,0.02);
+
+  border: 1px solid hsl(var(--border));
+
+  display: flex;
+  align-items: center;
+  padding: 24px;
+
+  box-shadow: 0 0 30px rgba(255,200,0,0.1);
+}
+
+.banner-content h1 {
+  margin-bottom: 8px;
+}
+
+.banner-content button {
+  margin-top: 10px;
+  padding: 8px 16px;
+
+  background: hsl(var(--primary));
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  box-shadow: 0 0 10px rgba(255,200,0,0.4);
+  transition: 0.2s;
+}
+
+.banner-content button:hover {
+  transform: scale(1.05);
+}
+
+/* 🏆 CAMPEÕES */
+.champions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.champion-card {
+  padding: 20px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.02);
+  border: 1px solid hsl(var(--border));
+
+  text-align: center;
+
+  box-shadow: 0 0 20px rgba(255,200,0,0.05);
+  transition: all 0.2s;
+}
+
+.champion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px rgba(255,200,0,0.15);
+}
+
+.champion-avatar {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 12px;
+
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  color: black;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+
+  box-shadow: 0 0 15px rgba(255,200,0,0.4);
+}
+
+/* ⚡ GRID */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* 🎯 CARD BASE */
+.home-card {
+  padding: 20px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.02) !important;
+  border: 1px solid hsl(var(--border));
+
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 25px rgba(255,200,0,0.15);
+}
+
+/* ⭐ DESTAQUE */
+.home-card.highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(255,200,0,0.1),
+    transparent
+  ) !important;
+
+  box-shadow: 0 0 30px rgba(255,200,0,0.2);
+}
