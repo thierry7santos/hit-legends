@@ -49,6 +49,7 @@ export async function getStandings(req, res) {
     });
   }
 }
+
 /* 🔥 PAIRINGS */
 
 export async function getPairings(req, res) {
