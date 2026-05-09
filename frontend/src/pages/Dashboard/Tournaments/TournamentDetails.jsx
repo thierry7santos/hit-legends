@@ -9,8 +9,9 @@ import Bracket from "../../../components/ui/Bracket";
 import TournamentHero from "./components/TournamentHero/TournamentHero";
 import TournamentTabs from "./components/TournamentTabs/TournamentTabs";
 import OverviewTab from "./components/OverviewTab/OverviewTab";
-import PlayersTab from "./components/PairingsTab/PlayersTab";
+import PlayersTab from "./components/PlayersTab/PlayersTab";
 import StandingsTab from "./components/StandingsTab/StandingsTab";
+import PairingsTab from "./components/PairingsTab/PairingsTab";
 
 import {
   getPairings,
@@ -189,46 +190,13 @@ export default function TournamentDetails() {
         {/* ROUNDS */}
 
         {tab === "rounds" && (
-          <Card>
-
-            <div className="round-selector">
-
-              <button
-                onClick={() =>
-                  setCurrentRound(
-                    (prev) =>
-                      Math.max(
-                        prev - 1,
-                        1
-                      )
-                  )
-                }
-              >
-                ←
-              </button>
-
-              <span>
-                Round {currentRound}
-              </span>
-
-              <button
-                onClick={() =>
-                  setCurrentRound(
-                    (prev) =>
-                      prev + 1
-                  )
-                }
-              >
-                →
-              </button>
-
-            </div>
-
-            <PairingsList
-              pairings={pairings}
-            />
-
-          </Card>
+          <PairingsTab
+            pairings={pairings}
+            currentRound={currentRound}
+            setCurrentRound={
+              setCurrentRound
+            }
+          />
         )}
 
         {/* BRACKET */}
