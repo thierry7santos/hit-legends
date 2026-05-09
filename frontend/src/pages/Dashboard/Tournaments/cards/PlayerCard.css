@@ -1,0 +1,76 @@
+/* src/pages/Dashboard/Tournaments/cards/PlayerCard.css */
+
+.player-card {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  border: 1px solid
+    rgba(255,255,255,0.06);
+
+  transition: all 0.2s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(255,200,0,0.18);
+
+  box-shadow:
+    0 0 18px
+    rgba(255,200,0,0.08);
+}
+
+/* AVATAR */
+
+.player-avatar {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffd54f,
+      #ffbf00
+    );
+
+  color: black;
+
+  box-shadow:
+    0 0 15px
+    rgba(255,200,0,0.18);
+}
+
+/* CONTENT */
+
+.player-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-content h3 {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.player-content span {
+  font-size: 13px;
+  opacity: 0.6;
+}

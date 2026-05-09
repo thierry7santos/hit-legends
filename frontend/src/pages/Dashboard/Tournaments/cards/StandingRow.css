@@ -1,0 +1,121 @@
+/* src/pages/Dashboard/Tournaments/cards/StandingRow.css */
+
+.standing-row {
+  display: grid;
+
+  grid-template-columns:
+    90px
+    1fr
+    120px
+    120px;
+
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 16px 18px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.03);
+
+  border: 1px solid
+    rgba(255,255,255,0.06);
+
+  transition: all 0.2s ease;
+}
+
+.standing-row:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(255,200,0,0.18);
+
+  box-shadow:
+    0 0 20px
+    rgba(255,200,0,0.06);
+}
+
+/* RANK */
+
+.standing-rank {
+  font-weight: 700;
+
+  color: #ffd54f;
+}
+
+/* PLAYER */
+
+.standing-player {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+.standing-avatar {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffd54f,
+      #ffbf00
+    );
+
+  color: black;
+}
+
+.standing-player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.standing-player-info span {
+  font-size: 12px;
+  opacity: 0.6;
+
+  margin-top: 2px;
+}
+
+/* RECORD */
+
+.standing-record {
+  font-weight: 600;
+
+  opacity: 0.8;
+}
+
+/* POINTS */
+
+.standing-points {
+  font-weight: 700;
+
+  color: #ffd54f;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .standing-row {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .standing-record,
+  .standing-points,
+  .standing-rank {
+    padding-left: 58px;
+  }
+}

@@ -1,8 +1,16 @@
+//frontend\src\pages\Dashboard\Tournaments\TournamentDetails.jsx
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Card from "../../../components/ui/Card";
 import Bracket from "../../../components/ui/Bracket";
+
+import TournamentHero from "./components/TournamentHero/TournamentHero";
+import TournamentTabs from "./components/TournamentTabs/TournamentTabs";
+import OverviewTab from "./components/OverviewTab/OverviewTab";
+import PlayersTab from "./components/PairingsTab/PlayersTab";
+import StandingsTab from "./components/StandingsTab/StandingsTab";
 
 import {
   getPairings,
@@ -135,89 +143,18 @@ export default function TournamentDetails() {
 
       {/* 🔥 HERO */}
 
-      <div className="details-hero">
-
-        <div>
-
-          <h1>
-            {tournament.name}
-          </h1>
-
-          <span
-            className={`status ${tournament.status}`}
-          >
-            {getStatusLabel(
-              tournament.status
-            )}
-          </span>
-
-          <div className="hero-info">
-
-            <span>
-              {players.length} jogadores
-            </span>
-
-            <span>
-              {formatTournamentFormat(
-                tournament.format
-              )}
-            </span>
-
-          </div>
-
-        </div>
-
-        <button className="join-btn">
-          Participar
-        </button>
-
-      </div>
+      <TournamentHero
+        tournament={tournament}
+        playersCount={players.length}
+        currentRound={currentRound}
+      />
 
       {/* 🧩 TABS */}
 
-      <div className="tabs">
-
-        <Tab
-          label="Visão geral"
-          active={
-            tab === "overview"
-          }
-          onClick={() =>
-            setTab("overview")
-          }
-        />
-
-        <Tab
-          label="Jogadores"
-          active={
-            tab === "players"
-          }
-          onClick={() =>
-            setTab("players")
-          }
-        />
-
-        <Tab
-          label="Rodadas"
-          active={
-            tab === "rounds"
-          }
-          onClick={() =>
-            setTab("rounds")
-          }
-        />
-
-        <Tab
-          label="Bracket"
-          active={
-            tab === "bracket"
-          }
-          onClick={() =>
-            setTab("bracket")
-          }
-        />
-
-      </div>
+      <TournamentTabs
+        tab={tab}
+        setTab={setTab}
+      />
 
       {/* 📦 CONTENT */}
 
@@ -226,24 +163,25 @@ export default function TournamentDetails() {
         {/* OVERVIEW */}
 
         {tab === "overview" && (
-          <Card>
-
-            <h3>
-              Sobre o torneio
-            </h3>
-
-            <p>
-              {tournament.description ||
-                "Nenhuma descrição disponível."}
-            </p>
-
-          </Card>
+          <OverviewTab
+            tournament={tournament}
+            playersCount={players.length}
+            currentRound={currentRound}
+          />
         )}
 
         {/* PLAYERS */}
 
         {tab === "players" && (
-          <Players
+          <PlayersTab
+            players={players}
+          />
+        )}
+
+        {/* STANDINGS */}
+
+        {tab === "standings" && (
+          <StandingsTab
             players={players}
           />
         )}
@@ -311,44 +249,6 @@ export default function TournamentDetails() {
   );
 }
 
-/* 👥 PLAYERS */
-
-function Players({
-  players,
-}) {
-  return (
-    <div className="players-grid">
-
-      {players.map(
-        (player, index) => (
-          <Card
-            key={index}
-            className="player-card"
-          >
-
-            <div className="player-avatar">
-              {player.name?.[0]?.toUpperCase()}
-            </div>
-
-            <div>
-
-              <h4>
-                {player.name}
-              </h4>
-
-              <p>
-                #{player.rank}
-              </p>
-
-            </div>
-
-          </Card>
-        )
-      )}
-
-    </div>
-  );
-}
 
 /* ⚔️ PAIRINGS */
 
@@ -399,72 +299,4 @@ function PairingsList({
 
     </div>
   );
-}
-
-/* 🔥 TAB */
-
-function Tab({
-  label,
-  active,
-  onClick,
-}) {
-  return (
-    <button
-      className={`tab ${
-        active
-          ? "active"
-          : ""
-      }`}
-      onClick={onClick}
-    >
-      {label}
-    </button>
-  );
-}
-
-/* 🔥 STATUS */
-
-function getStatusLabel(
-  status
-) {
-  if (status === "open")
-    return "Inscrições abertas";
-
-  if (status === "live")
-    return "Ao vivo";
-
-  if (
-    status === "finished"
-  )
-    return "Finalizado";
-
-  return status;
-}
-
-/* 🔥 FORMAT */
-
-function formatTournamentFormat(
-  format
-) {
-  if (
-    format ===
-    "single_elimination"
-  ) {
-    return "Eliminação simples";
-  }
-
-  if (
-    format ===
-    "double_elimination"
-  ) {
-    return "Eliminação dupla";
-  }
-
-  if (
-    format === "swiss"
-  ) {
-    return "Suíço";
-  }
-
-  return format;
 }
