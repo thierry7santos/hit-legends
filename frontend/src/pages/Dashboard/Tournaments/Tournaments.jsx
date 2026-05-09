@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Card from "../../../components/ui/Card";
@@ -22,7 +22,7 @@ export default function Tournaments() {
         const data =
           await getTournaments();
 
-        setTournaments(data);
+        setTournaments(data || []);
       } catch (err) {
         console.error(err);
       } finally {
@@ -33,6 +33,34 @@ export default function Tournaments() {
     load();
   }, []);
 
+  /* 🔥 ORDENA POR DATA */
+
+  const sortedTournaments =
+    useMemo(() => {
+      return [...tournaments].sort(
+        (a, b) =>
+          new Date(
+            a.start_date
+          ) -
+          new Date(
+            b.start_date
+          )
+      );
+    }, [tournaments]);
+
+  /* 🔥 HERO */
+
+  const featured =
+    sortedTournaments.find(
+      (t) =>
+        t.status === "live"
+    ) ||
+    sortedTournaments.find(
+      (t) =>
+        t.status === "open"
+    ) ||
+    sortedTournaments[0];
+
   if (loading) {
     return (
       <div className="loading-page">
@@ -41,35 +69,76 @@ export default function Tournaments() {
     );
   }
 
-  const featured =
-    tournaments[0];
-
   return (
     <div className="tournaments">
 
-      {/* HERO */}
+      {/* 🔥 HERO */}
 
       {featured && (
-        <div className="tournament-hero">
+        <div
+          className="tournament-hero"
+          onClick={() =>
+            navigate(
+              `/tournaments/${featured.id}`
+            )
+          }
+        >
+
+          <div className="hero-overlay" />
 
           <div className="hero-content">
+
+            <span
+              className={`hero-status ${featured.status}`}
+            >
+              {getStatusLabel(
+                featured.status
+              )}
+            </span>
 
             <h1>
               {featured.name}
             </h1>
 
             <p>
-              Domine os adversários e prove seu valor
+              {
+                featured.description
+              ||
+                "Participe da batalha e suba no ranking da comunidade."
+              }
             </p>
 
-            <button
-              onClick={() =>
-                navigate(
-                  `/tournaments/${featured.id}`
-                )
-              }
-            >
-              Participar
+            <div className="hero-meta">
+
+              <div className="meta-box">
+                <strong>
+                  {
+                    featured.players_count ||
+                    0
+                  }
+                </strong>
+
+                <span>
+                  Jogadores
+                </span>
+              </div>
+
+              <div className="meta-box">
+                <strong>
+                  {formatTournamentFormat(
+                    featured.format
+                  )}
+                </strong>
+
+                <span>
+                  Formato
+                </span>
+              </div>
+
+            </div>
+
+            <button>
+              Ver torneio
             </button>
 
           </div>
@@ -77,48 +146,125 @@ export default function Tournaments() {
         </div>
       )}
 
-      {/* LIST */}
+      {/* 🔥 HEADER */}
+
+      <div className="section-header">
+
+        <div>
+          <h2>
+            Torneios da Comunidade
+          </h2>
+
+          <p>
+            Todos os eventos organizados pela Hit Legends
+          </p>
+        </div>
+
+        <span className="tournament-count">
+          {
+            sortedTournaments.length
+          } torneios
+        </span>
+
+      </div>
+
+      {/* 🔥 GRID */}
 
       <div className="tournament-list">
 
-        {tournaments.map((t) => (
-          <Card
-            key={t.id}
-            className={`tournament-card ${t.status}`}
-            onClick={() =>
-              navigate(
-                `/tournaments/${t.id}`
-              )
-            }
-          >
-            <div className="tournament-header">
+        {sortedTournaments.map(
+          (tournament) => (
+            <Card
+              key={
+                tournament.id
+              }
+              className={`tournament-card ${tournament.status}`}
+              onClick={() =>
+                navigate(
+                  `/tournaments/${tournament.id}`
+                )
+              }
+            >
 
-              <h3>{t.name}</h3>
+              <div className="card-glow" />
 
-              <span
-                className={`status ${t.status}`}
-              >
-                {getStatusLabel(
-                  t.status
-                )}
-              </span>
+              {/* HEADER */}
 
-            </div>
+              <div className="tournament-header">
 
-            <div className="tournament-info">
+                <span
+                  className={`status ${tournament.status}`}
+                >
+                  {getStatusLabel(
+                    tournament.status
+                  )}
+                </span>
 
-              <p>
-                {t.players_count} jogadores
-              </p>
+                <span className="players-badge">
+                  {
+                    tournament.players_count ||
+                    0
+                  } players
+                </span>
 
-              <p>
-                {t.format}
-              </p>
+              </div>
 
-            </div>
+              {/* BODY */}
 
-          </Card>
-        ))}
+              <div className="tournament-body">
+
+                <h3>
+                  {
+                    tournament.name
+                  }
+                </h3>
+
+                <p>
+                  {
+                    tournament.description ||
+                    "Sem descrição disponível."
+                  }
+                </p>
+
+              </div>
+
+              {/* FOOTER */}
+
+              <div className="tournament-footer">
+
+                <div className="footer-item">
+
+                  <span>
+                    Formato
+                  </span>
+
+                  <strong>
+                    {formatTournamentFormat(
+                      tournament.format
+                    )}
+                  </strong>
+
+                </div>
+
+                <div className="footer-item">
+
+                  <span>
+                    Início
+                  </span>
+
+                  <strong>
+                    {formatDate(
+                      tournament.start_date
+                    )}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </Card>
+          )
+        )}
 
       </div>
 
@@ -126,15 +272,66 @@ export default function Tournaments() {
   );
 }
 
-function getStatusLabel(status) {
+/* 🔥 STATUS */
+
+function getStatusLabel(
+  status
+) {
   if (status === "open")
     return "Inscrições abertas";
 
   if (status === "live")
     return "Ao vivo";
 
-  if (status === "finished")
+  if (
+    status === "finished"
+  )
     return "Finalizado";
 
   return status;
+}
+
+/* 🔥 FORMAT */
+
+function formatTournamentFormat(
+  format
+) {
+  if (
+    format ===
+    "single_elimination"
+  ) {
+    return "Eliminação simples";
+  }
+
+  if (
+    format ===
+    "double_elimination"
+  ) {
+    return "Eliminação dupla";
+  }
+
+  if (
+    format === "swiss"
+  ) {
+    return "Suíço";
+  }
+
+  return format;
+}
+
+/* 🔥 DATE */
+
+function formatDate(date) {
+  if (!date)
+    return "Sem data";
+
+  return new Date(
+    date
+  ).toLocaleDateString(
+    "pt-BR",
+    {
+      day: "2-digit",
+      month: "short",
+    }
+  );
 }
