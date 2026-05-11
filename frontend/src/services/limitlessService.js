@@ -1,3 +1,5 @@
+//frontend\src\services\limitlessService.js
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 /* 🏆 STANDINGS */
@@ -28,9 +30,9 @@ export async function getPairings(slug, round = 1) {
 
 /* 🏆 BRACKET */
 
-export async function getBracket(slug, players = 32) {
+export async function getBracket(slug, format) {
   const res = await fetch(
-    `${API_URL}/api/limitless/${slug}/bracket?players=${players}`,
+    `${API_URL}/api/limitless/${slug}/bracket?format=${format}`,
   );
 
   if (!res.ok) {

@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Card from "../../../components/ui/Card";
-import Bracket from "../../../components/ui/Bracket";
 
 import TournamentHero from "./components/TournamentHero/TournamentHero";
 import TournamentTabs from "./components/TournamentTabs/TournamentTabs";
@@ -12,6 +11,7 @@ import OverviewTab from "./components/OverviewTab/OverviewTab";
 import PlayersTab from "./components/PlayersTab/PlayersTab";
 import StandingsTab from "./components/StandingsTab/StandingsTab";
 import PairingsTab from "./components/PairingsTab/PairingsTab";
+import BracketTab from "./components/BracketTab/BracketTab";
 
 import {
   getPairings,
@@ -38,7 +38,7 @@ export default function TournamentDetails() {
   const [players, setPlayers] =
     useState([]);
 
-  const [rounds, setRounds] =
+  const [bracketMatches, setBracketMatches] =
     useState([]);
 
   const [currentRound, setCurrentRound] =
@@ -95,16 +95,17 @@ export default function TournamentDetails() {
 
           const bracketData =
             await getBracket(
-              tournamentData.limitless_slug
+              tournamentData.limitless_slug,
+              tournamentData.format
             );
 
-          setRounds(
+          setBracketMatches(
             bracketData
           );
         } else {
           setPlayers([]);
           setPairings([]);
-          setRounds([]);
+          setBracketMatches([]);
         }
       } catch (err) {
         console.error(
@@ -134,7 +135,7 @@ export default function TournamentDetails() {
   if (!tournament) {
     return (
       <div className="error-box">
-        Torneio não encontrado
+        Torneio não encontrado, informe a um adminstrador.
       </div>
     );
   }
@@ -155,6 +156,7 @@ export default function TournamentDetails() {
       <TournamentTabs
         tab={tab}
         setTab={setTab}
+        tournament={tournament}
       />
 
       {/* 📦 CONTENT */}
@@ -202,68 +204,13 @@ export default function TournamentDetails() {
         {/* BRACKET */}
 
         {tab === "bracket" && (
-          <Card>
-
-            <Bracket
-              rounds={rounds}
-            />
-
-          </Card>
+          <BracketTab
+            rounds={bracketMatches}
+            format={tournament.format}
+          />
         )}
 
       </div>
-
-    </div>
-  );
-}
-
-
-/* ⚔️ PAIRINGS */
-
-function PairingsList({
-  pairings,
-}) {
-  return (
-    <div className="rounds-container">
-
-      {pairings.map(
-        (match, index) => (
-          <div
-            key={index}
-            className="round-match"
-          >
-
-            <div className="table-number">
-              Mesa {match.table}
-            </div>
-
-            <div
-              className={`player ${
-                match.winner === 1
-                  ? "winner"
-                  : ""
-              }`}
-            >
-              {match.player1}
-            </div>
-
-            <div className="vs">
-              {match.score}
-            </div>
-
-            <div
-              className={`player ${
-                match.winner === 2
-                  ? "winner"
-                  : ""
-              }`}
-            >
-              {match.player2}
-            </div>
-
-          </div>
-        )
-      )}
 
     </div>
   );

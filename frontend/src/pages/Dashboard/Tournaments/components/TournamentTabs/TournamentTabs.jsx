@@ -5,6 +5,7 @@ import "./TournamentTabs.css";
 export default function TournamentTabs({
   tab,
   setTab,
+  tournament,
 }) {
   const tabs = [
     {
@@ -23,11 +24,16 @@ export default function TournamentTabs({
       key: "rounds",
       label: "Rodadas",
     },
-    {
+  ];
+
+  if (
+    tournament?.format !== "round_robin"
+  ) {
+    tabs.push({
       key: "bracket",
       label: "Mata-Mata",
-    },
-  ];
+    });
+  }
 
   return (
     <div className="tournament-tabs">
@@ -44,7 +50,6 @@ export default function TournamentTabs({
             setTab(item.key)
           }
         >
-
           <span>
             {item.label}
           </span>
