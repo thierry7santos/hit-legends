@@ -8,15 +8,67 @@ import { fetchLimitlessStandings } from "../services/limitless/fetchLimitlessSta
 
 import { fetchLimitlessPairings } from "../services/limitless/fetchLimitlessPairings.js";
 
+/* 🏆 INIT CACHE */
+
+async function initializeTournamentCache(slug, format) {
+  console.log(`🆕 Creating cache for ${slug}`);
+
+  /* 🔒 LOCK */
+
+  tournamentCache[slug] = {
+    isFetching: true,
+  };
+
+  try {
+    const standings = await fetchLimitlessStandings(slug);
+
+    const pairings = await fetchLimitlessPairings(slug);
+
+    const bracket = await fetchLimitlessBracket(slug, format);
+
+    tournamentCache[slug] = {
+      standings,
+
+      pairings,
+
+      bracket,
+
+      updatedAt: Date.now(),
+
+      finalized: false,
+
+      format,
+
+      isFetching: false,
+    };
+  } catch (err) {
+    delete tournamentCache[slug];
+
+    throw err;
+  }
+}
+
 /* 🏆 STANDINGS */
 
 export async function getStandings(req, res) {
   try {
     const { slug } = req.params;
 
-    const data = await fetchLimitlessStandings(slug);
+    const format = req.query.format || "swiss_bracket";
 
-    return res.json(data);
+    if (!tournamentCache[slug]) {
+      await initializeTournamentCache(slug, format);
+    }
+
+    /* ⏳ FETCH EM ANDAMENTO */
+
+    if (tournamentCache[slug]?.isFetching) {
+      return res.status(202).json({
+        loading: true,
+      });
+    }
+
+    return res.json(tournamentCache[slug].standings);
   } catch (error) {
     console.error(error);
 
@@ -32,11 +84,21 @@ export async function getPairings(req, res) {
   try {
     const { slug } = req.params;
 
-    const round = req.query.round || 1;
+    const format = req.query.format || "swiss_bracket";
 
-    const data = await fetchLimitlessPairings(slug, round);
+    if (!tournamentCache[slug]) {
+      await initializeTournamentCache(slug, format);
+    }
 
-    return res.json(data);
+    /* ⏳ FETCH EM ANDAMENTO */
+
+    if (tournamentCache[slug]?.isFetching) {
+      return res.status(202).json({
+        loading: true,
+      });
+    }
+
+    return res.json(tournamentCache[slug].pairings);
   } catch (error) {
     console.error(error);
 
@@ -52,21 +114,21 @@ export async function getBracket(req, res) {
   try {
     const { slug } = req.params;
 
-    const format = req.query.format;
+    const format = req.query.format || "single_elimination";
 
     if (!tournamentCache[slug]) {
-      const data = await fetchLimitlessBracket(slug, format);
-
-      tournamentCache[slug] = {
-        data,
-
-        lastUpdate: Date.now(),
-
-        finalized: false,
-      };
+      await initializeTournamentCache(slug, format);
     }
 
-    return res.json(tournamentCache[slug].data);
+    /* ⏳ FETCH EM ANDAMENTO */
+
+    if (tournamentCache[slug]?.isFetching) {
+      return res.status(202).json({
+        loading: true,
+      });
+    }
+
+    return res.json(tournamentCache[slug].bracket);
   } catch (error) {
     console.error(error);
 

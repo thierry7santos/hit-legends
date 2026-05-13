@@ -1,4 +1,4 @@
-// src/pages/Dashboard/Tournaments/components/PairingsTab/PairingsTab.jsx
+import { useState } from "react";
 
 import PairingCard from "../../cards/PairingCard";
 
@@ -6,9 +6,18 @@ import "./PairingsTab.css";
 
 export default function PairingsTab({
   pairings,
-  currentRound,
-  setCurrentRound,
 }) {
+  const [selectedRound, setSelectedRound] =
+    useState(
+      pairings.length || 1,
+    );
+
+  const currentRoundData =
+    pairings.find(
+      (round) =>
+        round.round === selectedRound,
+    );
+
   return (
     <div className="pairings-tab">
 
@@ -23,7 +32,8 @@ export default function PairingsTab({
           </h2>
 
           <p>
-            Pairings da rodada atual
+            Histórico completo
+            do torneio
           </p>
 
         </div>
@@ -31,13 +41,16 @@ export default function PairingsTab({
         <div className="round-selector">
 
           <button
+            disabled={
+              selectedRound === 1
+            }
             onClick={() =>
-              setCurrentRound(
+              setSelectedRound(
                 (prev) =>
                   Math.max(
                     prev - 1,
-                    1
-                  )
+                    1,
+                  ),
               )
             }
           >
@@ -45,14 +58,21 @@ export default function PairingsTab({
           </button>
 
           <span>
-            Rodada {currentRound}
+            Rodada {selectedRound}
           </span>
 
           <button
+            disabled={
+              selectedRound ===
+              pairings.length
+            }
             onClick={() =>
-              setCurrentRound(
+              setSelectedRound(
                 (prev) =>
-                  prev + 1
+                  Math.min(
+                    prev + 1,
+                    pairings.length,
+                  ),
               )
             }
           >
@@ -63,18 +83,30 @@ export default function PairingsTab({
 
       </div>
 
+      {/* STATUS */}
+
+      {currentRoundData &&
+        !currentRoundData.finalized && (
+          <div className="live-round-banner">
+
+            Rodada em andamento
+
+          </div>
+        )}
+
       {/* LIST */}
 
       <div className="pairings-grid">
 
-        {pairings.length > 0 ? (
-          pairings.map(
+        {currentRoundData?.matches
+          ?.length > 0 ? (
+          currentRoundData.matches.map(
             (match, index) => (
               <PairingCard
                 key={index}
                 match={match}
               />
-            )
+            ),
           )
         ) : (
           <div className="empty-pairings">

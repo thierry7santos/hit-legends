@@ -1,7 +1,9 @@
+// backend/services/limitless/fetchLimitlessPairings.js
+
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function fetchLimitlessPairings(slug, round = 1) {
+async function fetchRound(slug, round) {
   const url = `https://play.limitlesstcg.com/tournament/${slug}/pairings?round=${round}`;
 
   const { data } = await axios.get(url);
@@ -50,4 +52,44 @@ export async function fetchLimitlessPairings(slug, round = 1) {
   });
 
   return pairings;
+}
+
+export async function fetchLimitlessPairings(slug) {
+  const rounds = [];
+
+  let currentRound = 1;
+
+  while (true) {
+    const matches = await fetchRound(slug, currentRound);
+
+    /* ❌ round inexistente */
+
+    if (!matches.length) {
+      break;
+    }
+
+    rounds.push({
+      round: currentRound,
+
+      finalized: false,
+
+      matches,
+    });
+
+    currentRound++;
+  }
+
+  /* 🔥 rounds anteriores finalizadas */
+
+  rounds.forEach((round, index) => {
+    if (index < rounds.length - 1) {
+      round.finalized = true;
+    }
+  });
+
+  return {
+    currentRound: rounds.length,
+
+    rounds,
+  };
 }

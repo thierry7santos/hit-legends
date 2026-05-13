@@ -71,7 +71,7 @@ export default function StandingsTab({
           </span>
 
           <span>
-            Record
+            V - D - E
           </span>
 
           <span>

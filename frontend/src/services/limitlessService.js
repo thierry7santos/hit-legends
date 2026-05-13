@@ -1,11 +1,13 @@
-//frontend\src\services\limitlessService.js
+// frontend/src/services/limitlessService.js
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 /* 🏆 STANDINGS */
 
-export async function getStandings(slug) {
-  const res = await fetch(`${API_URL}/api/limitless/${slug}/standings`);
+export async function getStandings(slug, signal) {
+  const res = await fetch(`${API_URL}/api/limitless/${slug}/standings`, {
+    signal,
+  });
 
   if (!res.ok) {
     throw new Error("Erro ao buscar standings");
@@ -16,10 +18,10 @@ export async function getStandings(slug) {
 
 /* 🔥 PAIRINGS */
 
-export async function getPairings(slug, round = 1) {
-  const res = await fetch(
-    `${API_URL}/api/limitless/${slug}/pairings?round=${round}`,
-  );
+export async function getPairings(slug, signal) {
+  const res = await fetch(`${API_URL}/api/limitless/${slug}/pairings`, {
+    signal,
+  });
 
   if (!res.ok) {
     throw new Error("Erro ao buscar pairings");
@@ -30,9 +32,10 @@ export async function getPairings(slug, round = 1) {
 
 /* 🏆 BRACKET */
 
-export async function getBracket(slug, format) {
+export async function getBracket(slug, format, signal) {
   const res = await fetch(
     `${API_URL}/api/limitless/${slug}/bracket?format=${format}`,
+    { signal },
   );
 
   if (!res.ok) {

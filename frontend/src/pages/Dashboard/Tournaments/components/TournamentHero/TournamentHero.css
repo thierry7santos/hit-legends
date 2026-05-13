@@ -1,66 +1,120 @@
-/* src/pages/Dashboard/Tournaments/components/TournamentHero/TournamentHero.css */
-
 .tournament-hero-card {
   position: relative;
 
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
 
-  gap: 24px;
+  gap: 28px;
 
-  padding: 28px;
+  padding: 32px;
 
-  border-radius: 24px;
+  border-radius: 30px;
 
   overflow: hidden;
 
   background:
     linear-gradient(
-      135deg,
-      rgba(255, 200, 0, 0.08),
-      transparent
-    ),
-    rgba(255,255,255,0.02);
+      145deg,
+      rgba(26, 26, 30, 0.98),
+      rgba(12, 12, 14, 0.98)
+    );
 
   border: 1px solid
-    hsl(var(--border));
+    rgba(255, 210, 90, 0.12);
 
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(18px);
 
   box-shadow:
-    0 0 30px
-    rgba(255,200,0,0.08);
+    0 25px 70px rgba(0,0,0,0.48),
+    0 0 0 1px rgba(255,196,0,0.04);
 }
 
-/* 🔥 STATUS COLORS */
+/* 🔥 BACK GOLD GLOW */
 
-.tournament-hero-card.live {
-  box-shadow:
-    0 0 35px
-    rgba(255,0,80,0.08);
+.tournament-hero-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: -2px;
+
+  border-radius: inherit;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,196,0,0.16) 0%,
+      rgba(255,196,0,0.06) 38%,
+      transparent 72%
+    );
+
+  filter: blur(34px);
+
+  opacity: 0.9;
+
+  z-index: 0;
+
+  pointer-events: none;
 }
 
-.tournament-hero-card.open {
-  box-shadow:
-    0 0 35px
-    rgba(255,200,0,0.08);
+/* 🔥 PREMIUM BORDER */
+
+.tournament-hero-card::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  padding: 1px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,220,120,0.22),
+      rgba(255,196,0,0.05),
+      rgba(255,220,120,0.12)
+    );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0)
+      content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+
+  mask-composite: exclude;
+
+  pointer-events: none;
 }
 
 /* LEFT */
 
 .hero-left {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  z-index: 2;
 }
 
 .hero-left h1 {
-  font-size: 38px;
-  line-height: 1.1;
+  font-size: 44px;
 
-  margin: 12px 0 20px;
+  line-height: 1.02;
+
+  margin: 18px 0 26px;
+
+  color: #ffffff;
+
+  font-weight: 800;
+
+  letter-spacing: -1.4px;
+
+  text-shadow:
+    0 0 18px rgba(255,196,0,0.10);
 }
 
 /* STATUS */
@@ -68,122 +122,255 @@
 .hero-status {
   width: fit-content;
 
-  padding: 6px 12px;
+  padding: 9px 16px;
 
   border-radius: 999px;
 
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+
+  letter-spacing: 0.6px;
+
+  text-transform: uppercase;
+
+  border: 1px solid transparent;
+
+  backdrop-filter: blur(10px);
 }
+
+/* OPEN */
 
 .hero-status.open {
   background:
-    rgba(255,200,0,0.15);
+    rgba(128, 255, 0, 0.65);
 
-  color: #ffd54f;
+  color: #ffffff;
+
+  border-color:
+    rgba(128, 128, 128, 0.18);
+
+  box-shadow:
+    0 0 22px rgba(255,196,0,0.10);
 }
+
+/* LIVE */
 
 .hero-status.live {
   background:
-    rgba(255,0,80,0.15);
+    linear-gradient(
+      135deg,
+      rgba(248, 25, 25, 0.611),
+      rgba(255, 17, 0, 0.33)
+    );
 
-  color: #ff5f8f;
+  color: #fff4c2;
+
+  border-color:
+    rgba(152, 152, 152, 0.25);
+
+  box-shadow:
+    0 0 24px rgba(255,140,0,0.20);
 }
+
+.hero-status.live::before {
+  content: "●";
+
+  margin-right: 6px;
+
+  color: #ff4747;
+
+  animation: pulse 1.2s infinite;
+}
+
+/* FINISHED */
 
 .hero-status.finished {
   background:
-    rgba(255,255,255,0.08);
+    rgba(255,255,255,0.06);
 
-  color: #999;
+  color: #d0d0d0;
+
+  border-color:
+    rgba(255,255,255,0.08);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 /* META */
 
 .hero-meta {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
 
-  gap: 14px;
+  grid-template-columns:
+    repeat(auto-fit, minmax(150px, 1fr));
+
+  gap: 16px;
 }
 
+/* INFO BOX */
+
 .hero-info-box {
-  min-width: 120px;
+  position: relative;
 
-  padding: 14px;
+  overflow: hidden;
 
-  border-radius: 16px;
+  padding: 18px;
+
+  border-radius: 20px;
 
   background:
-    rgba(255,255,255,0.03);
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.025)
+    );
 
   border: 1px solid
-    rgba(255,255,255,0.05);
+    rgba(255,255,255,0.06);
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+}
+
+/* GLOW LAYER */
+
+.hero-info-box::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,196,0,0.12),
+      transparent 70%
+    );
+
+  opacity: 0;
+
+  transition: 0.25s;
+}
+
+.hero-info-box:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(255,196,0,0.16);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.03)
+    );
+
+  box-shadow:
+    0 0 24px rgba(255,196,0,0.10),
+    inset 0 0 18px rgba(255,196,0,0.04);
+}
+
+.hero-info-box:hover::before {
+  opacity: 1;
 }
 
 .hero-info-box span {
+  position: relative;
+  z-index: 2;
+
   display: block;
 
-  font-size: 12px;
+  margin-bottom: 8px;
 
-  opacity: 0.6;
+  font-size: 11px;
 
-  margin-bottom: 6px;
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+
+  color: rgba(255,255,255,0.52);
 }
 
 .hero-info-box strong {
-  font-size: 15px;
+  position: relative;
+  z-index: 2;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #f6f6f6;
 }
 
 /* ACTIONS */
 
 .hero-actions {
-  margin-top: 28px;
+  margin-top: 30px;
 }
 
 .hero-btn {
   border: none;
 
-  padding: 14px 22px;
+  padding: 15px 26px;
 
-  border-radius: 14px;
+  border-radius: 18px;
 
-  font-weight: 700;
+  font-weight: 800;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: 0.25s;
 }
+
+/* PRIMARY */
 
 .hero-btn.primary {
   background:
     linear-gradient(
       135deg,
-      #ffd54f,
+      #ffe082,
       #ffbf00
     );
 
-  color: black;
+  color: #111;
+
+  box-shadow:
+    0 12px 35px rgba(255,196,0,0.24);
 }
 
-.hero-btn.live {
-  background:
-    rgba(255,0,80,0.12);
+.hero-btn.primary:hover {
+  transform: translateY(-3px);
 
-  color: #ff5f8f;
-
-  border: 1px solid
-    rgba(255,0,80,0.2);
+  box-shadow:
+    0 16px 45px rgba(255,196,0,0.32);
 }
+
+/* FINISHED */
 
 .hero-btn.finished {
   background:
-    rgba(255,255,255,0.06);
+    rgba(255,255,255,0.07);
 
-  color: #999;
-}
+  color: #e1e1e1;
 
-.hero-btn:hover {
-  transform: translateY(-2px);
+  border: 1px solid
+    rgba(255,255,255,0.08);
 }
 
 /* BANNER */
@@ -191,14 +378,17 @@
 .hero-banner {
   position: relative;
 
-  border-radius: 20px;
+  border-radius: 24px;
 
   overflow: hidden;
 
-  min-height: 260px;
+  min-height: 340px;
 
   border: 1px solid
-    rgba(255,255,255,0.06);
+    rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 25px 50px rgba(0,0,0,0.35);
 }
 
 .hero-banner img {
@@ -207,7 +397,13 @@
 
   object-fit: cover;
 
-  transform: scale(1.03);
+  transform: scale(1.04);
+
+  transition: transform 0.4s ease;
+}
+
+.hero-banner:hover img {
+  transform: scale(1.07);
 }
 
 .hero-banner-overlay {
@@ -217,8 +413,8 @@
   background:
     linear-gradient(
       to top,
-      rgba(0,0,0,0.45),
-      transparent
+      rgba(0,0,0,0.65),
+      rgba(0,0,0,0.08)
     );
 }
 
@@ -227,13 +423,20 @@
 @media (max-width: 900px) {
   .tournament-hero-card {
     grid-template-columns: 1fr;
+
+    padding: 24px;
   }
 
   .hero-banner {
-    min-height: 180px;
+    min-height: 220px;
   }
 
   .hero-left h1 {
-    font-size: 28px;
+    font-size: 30px;
+  }
+
+  .hero-meta {
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 }

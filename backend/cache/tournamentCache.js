@@ -1,14 +1,27 @@
-// backend/cache/tournamentCache.js
-
 const tournamentCache = {};
 
 /**
  * Estrutura:
+ *
  * {
  *   [slug]: {
- *     data: [],
- *     lastUpdate: number,
- *     finalized: boolean
+ *
+ *     standings: [],
+ *
+ *     pairings: {
+ *       currentRound: 1,
+ *       rounds: [],
+ *     },
+ *
+ *     bracket: [],
+ *
+ *     updatedAt: number,
+ *
+ *     finalized: boolean,
+ *
+ *     format: string,
+ *
+ *     isFetching: boolean,
  *   }
  * }
  */

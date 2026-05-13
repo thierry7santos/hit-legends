@@ -1,9 +1,7 @@
-//frontend\src\pages\Dashboard\Tournaments\TournamentDetails.jsx
+// src/pages/Dashboard/Tournaments/TournamentDetails.jsx
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-import Card from "../../../components/ui/Card";
 
 import TournamentHero from "./components/TournamentHero/TournamentHero";
 import TournamentTabs from "./components/TournamentTabs/TournamentTabs";
@@ -23,6 +21,9 @@ import { getTournament } from "../../../services/tournamentService";
 
 import "./TournamentDetails.css";
 
+const REFRESH_INTERVAL =
+  30 * 1000;
+
 export default function TournamentDetails() {
   const { id } = useParams();
 
@@ -32,8 +33,11 @@ export default function TournamentDetails() {
   const [tournament, setTournament] =
     useState(null);
 
-  const [pairings, setPairings] =
-    useState([]);
+  const [pairingsData, setPairingsData] =
+    useState({
+      currentRound: 1,
+      rounds: [],
+    });
 
   const [players, setPlayers] =
     useState([]);
@@ -41,20 +45,15 @@ export default function TournamentDetails() {
   const [bracketMatches, setBracketMatches] =
     useState([]);
 
-  const [currentRound, setCurrentRound] =
-    useState(1);
-
   const [loading, setLoading] =
     useState(true);
 
-  /* 🔥 LOAD */
+  /* 🔥 LOAD TOURNAMENT */
 
   useEffect(() => {
-    async function load() {
+    async function loadTournament() {
       try {
         setLoading(true);
-
-        /* 🎯 TOURNAMENT */
 
         const tournamentData =
           await getTournament(id);
@@ -62,51 +61,6 @@ export default function TournamentDetails() {
         setTournament(
           tournamentData
         );
-
-        /* 🔥 LIMITLESS */
-
-        if (
-          tournamentData.limitless_slug
-        ) {
-          /* 👥 PLAYERS */
-
-          const standingsData =
-            await getStandings(
-              tournamentData.limitless_slug
-            );
-
-          setPlayers(
-            standingsData
-          );
-
-          /* ⚔️ PAIRINGS */
-
-          const pairingsData =
-            await getPairings(
-              tournamentData.limitless_slug,
-              currentRound
-            );
-
-          setPairings(
-            pairingsData
-          );
-
-          /* 🏆 BRACKET */
-
-          const bracketData =
-            await getBracket(
-              tournamentData.limitless_slug,
-              tournamentData.format
-            );
-
-          setBracketMatches(
-            bracketData
-          );
-        } else {
-          setPlayers([]);
-          setPairings([]);
-          setBracketMatches([]);
-        }
       } catch (err) {
         console.error(
           "Erro torneio:",
@@ -117,15 +71,90 @@ export default function TournamentDetails() {
       }
     }
 
-    load();
-  }, [id, currentRound]);
+    loadTournament();
+  }, [id]);
+
+  /* 🔥 LIVE DATA */
+
+  useEffect(() => {
+    if (
+      !tournament?.limitless_slug
+    ) {
+      return;
+    }
+
+    const controller =
+      new AbortController();
+
+    async function refreshLiveData() {
+      try {
+        const [
+          standingsData,
+          pairingsResponse,
+          bracketData,
+        ] = await Promise.all([
+          getStandings(
+            tournament.limitless_slug,
+            controller.signal
+          ),
+
+          getPairings(
+            tournament.limitless_slug,
+            controller.signal
+          ),
+
+          getBracket(
+            tournament.limitless_slug,
+            tournament.format,
+            controller.signal
+          ),
+        ]);
+
+        setPlayers(
+          standingsData
+        );
+
+        setPairingsData(
+          pairingsResponse
+        );
+
+        setBracketMatches(
+          bracketData
+        );
+      } catch (err) {
+        if (
+          err.name !==
+          "AbortError"
+        ) {
+          console.error(
+            "Erro live data:",
+            err
+          );
+        }
+      }
+    }
+
+    refreshLiveData();
+
+    const interval =
+      setInterval(
+        refreshLiveData,
+        REFRESH_INTERVAL
+      );
+
+    return () => {
+      controller.abort();
+
+      clearInterval(interval);
+    };
+  }, [tournament]);
 
   /* 🔥 LOADING */
 
   if (loading) {
     return (
       <div className="loading-page">
-        Carregando torneio...
+        Carregando o torneio...
       </div>
     );
   }
@@ -135,7 +164,8 @@ export default function TournamentDetails() {
   if (!tournament) {
     return (
       <div className="error-box">
-        Torneio não encontrado, informe a um adminstrador.
+        Torneio não encontrado,
+        informe a um administrador.
       </div>
     );
   }
@@ -148,7 +178,9 @@ export default function TournamentDetails() {
       <TournamentHero
         tournament={tournament}
         playersCount={players.length}
-        currentRound={currentRound}
+        currentRound={
+          pairingsData.currentRound
+        }
       />
 
       {/* 🧩 TABS */}
@@ -163,17 +195,17 @@ export default function TournamentDetails() {
 
       <div className="tab-content">
 
-        {/* OVERVIEW */}
-
         {tab === "overview" && (
           <OverviewTab
             tournament={tournament}
-            playersCount={players.length}
-            currentRound={currentRound}
+            playersCount={
+              players.length
+            }
+            currentRound={
+              pairingsData.currentRound
+            }
           />
         )}
-
-        {/* PLAYERS */}
 
         {tab === "players" && (
           <PlayersTab
@@ -181,32 +213,28 @@ export default function TournamentDetails() {
           />
         )}
 
-        {/* STANDINGS */}
-
         {tab === "standings" && (
           <StandingsTab
             players={players}
           />
         )}
 
-        {/* ROUNDS */}
-
         {tab === "rounds" && (
           <PairingsTab
-            pairings={pairings}
-            currentRound={currentRound}
-            setCurrentRound={
-              setCurrentRound
+            pairings={
+              pairingsData.rounds
             }
           />
         )}
 
-        {/* BRACKET */}
-
         {tab === "bracket" && (
           <BracketTab
-            rounds={bracketMatches}
-            format={tournament.format}
+            rounds={
+              bracketMatches
+            }
+            format={
+              tournament.format
+            }
           />
         )}
 

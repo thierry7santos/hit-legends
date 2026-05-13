@@ -94,18 +94,18 @@ function formatTournamentFormat(
     format ===
     "single_elimination"
   ) {
-    return "Eliminação simples";
+    return "Mata-Mata";
   }
 
   if (
     format ===
     "double_elimination"
   ) {
-    return "Eliminação dupla";
+    return "Dupla Eliminação";
   }
 
-  if (format === "swiss") {
-    return "Suíço";
+  if (format === "swiss_bracket") {
+    return "Suíço + Mata-Mata";
   }
 
   return format;

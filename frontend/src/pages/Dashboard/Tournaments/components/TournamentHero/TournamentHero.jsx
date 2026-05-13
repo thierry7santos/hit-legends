@@ -1,6 +1,7 @@
 // src/pages/Dashboard/Tournaments/components/TournamentHero/TournamentHero.jsx
 
 import "./TournamentHero.css";
+import banner1 from "./banner1.jpg"
 
 export default function TournamentHero({
   tournament,
@@ -38,20 +39,28 @@ export default function TournamentHero({
           />
 
           <HeroInfo
-            label="Players"
+            label="Jogadores"
             value={playersCount}
           />
 
-          {tournament.status ===
-            "live" && (
-            <HeroInfo
-              label="Rodada"
-              value={`Round ${currentRound}`}
-            />
-          )}
+          <HeroInfo
+            label="Plataforma"
+            value={
+              tournament.platform ||
+              "Pokémon TCG Live"
+            }
+          />
 
           <HeroInfo
-            label="Data"
+            label="Prêmio"
+            value={
+              tournament.prize ||
+              "Não informado"
+            }
+          />
+
+          <HeroInfo
+            label="Início"
             value={
               tournament.start_date
                 ? formatDate(
@@ -61,26 +70,25 @@ export default function TournamentHero({
             }
           />
 
+          {tournament.status ===
+            "live" && (
+            <HeroInfo
+              label="Rodada Atual"
+              value={`Round ${currentRound}`}
+            />
+          )}
+
         </div>
 
         <div className="hero-actions">
 
-          {tournament.status ===
-            "open" && (
+          {tournament.status === "open" && (
             <button className="hero-btn primary">
               Participar
             </button>
           )}
 
-          {tournament.status ===
-            "live" && (
-            <button className="hero-btn live">
-              🔴 Ao vivo
-            </button>
-          )}
-
-          {tournament.status ===
-            "finished" && (
+          {tournament.status === "finished" && (
             <button className="hero-btn finished">
               🏆 Finalizado
             </button>
@@ -95,10 +103,7 @@ export default function TournamentHero({
       <div className="hero-banner">
 
         <img
-          src={
-            tournament.banner ||
-            "/banners/banner1.jpg"
-          }
+          src={banner1}
           alt={tournament.name}
         />
 
@@ -167,15 +172,15 @@ function formatTournamentFormat(
 
   if (
     format ===
-    "double_elimination"
+    "round_robin"
   ) {
-    return "Eliminação dupla";
+    return "Classificatório";
   }
 
   if (
-    format === "swiss"
+    format === "swiss_bracket"
   ) {
-    return "Suíço";
+    return "Suíço + Mata-Mata";
   }
 
   return format;
