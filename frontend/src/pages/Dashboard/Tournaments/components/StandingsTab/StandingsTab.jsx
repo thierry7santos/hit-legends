@@ -7,13 +7,22 @@ import StandingRow from "../../cards/StandingRow";
 import "./StandingsTab.css";
 
 export default function StandingsTab({
-  players,
+  players = [],
+  format,
 }) {
   const [search, setSearch] =
     useState("");
 
+  const isSingleElimination =
+    format ===
+    "single_elimination";
+
   const filteredPlayers =
     useMemo(() => {
+      if (!Array.isArray(players)) {
+        return [];
+      }
+
       return players.filter(
         (player) =>
           player.name
@@ -31,28 +40,20 @@ export default function StandingsTab({
 
       <div className="standings-header">
 
-        <div>
+        <div className="standings-search">
 
-          <h2>
-            Classificação
-          </h2>
-
-          <p>
-            Ranking atual do torneio
-          </p>
+          <input
+            type="text"
+            placeholder="Buscar jogador..."
+            value={search}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
+          />
 
         </div>
-
-        <input
-          type="text"
-          placeholder="Buscar jogador..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-        />
 
       </div>
 
@@ -74,9 +75,11 @@ export default function StandingsTab({
             V - D - E
           </span>
 
-          <span>
-            Pontos
-          </span>
+          {!isSingleElimination && (
+            <span>
+              Pontos
+            </span>
+          )}
 
         </div>
 
@@ -88,6 +91,7 @@ export default function StandingsTab({
                 key={index}
                 player={player}
                 index={index}
+                format={format}
               />
             )
           )}

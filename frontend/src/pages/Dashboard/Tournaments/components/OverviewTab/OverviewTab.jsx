@@ -15,14 +15,10 @@ export default function OverviewTab({
           <div className="overview-card-header">
 
             <span>
-              Sobre o torneio
+              Descrição e Regras
             </span>
 
           </div>
-
-          <h2>
-            {tournament.name}
-          </h2>
 
           <p>
             {tournament.description ||

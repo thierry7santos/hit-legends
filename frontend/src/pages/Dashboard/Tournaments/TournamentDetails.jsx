@@ -111,7 +111,9 @@ export default function TournamentDetails() {
         ]);
 
         setPlayers(
-          standingsData
+          Array.isArray(standingsData)
+            ? standingsData
+            : standingsData?.standings || []
         );
 
         setPairingsData(
@@ -216,6 +218,7 @@ export default function TournamentDetails() {
         {tab === "standings" && (
           <StandingsTab
             players={players}
+            format={tournament.format}
           />
         )}
 

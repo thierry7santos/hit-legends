@@ -16,17 +16,21 @@ export async function loadSnapshotsToCache() {
 
     for (const tournament of data) {
       tournamentCache[tournament.slug] = {
-        standings: tournament.standings,
+        standings: tournament.standings || [],
 
-        pairings: tournament.pairings,
+        pairings: tournament.pairings || [],
 
-        bracket: tournament.bracket,
+        bracket: tournament.bracket || null,
 
-        updatedAt: tournament.updated_at,
+        updatedAt: tournament.updated_at
+          ? new Date(tournament.updated_at).getTime()
+          : 0,
 
-        finalized: tournament.finalized,
+        finalized: tournament.finalized || false,
 
-        format: tournament.format,
+        format: tournament.format || "swiss_bracket",
+
+        isFetching: false,
       };
 
       console.log(`✅ Loaded ${tournament.slug}`);

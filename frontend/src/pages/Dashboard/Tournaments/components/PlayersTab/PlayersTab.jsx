@@ -7,27 +7,36 @@ import PlayerCard from "../../cards/PlayerCard";
 import "./PlayersTab.css";
 
 export default function PlayersTab({
-  players,
+  players = [],
 }) {
   const [search, setSearch] =
     useState("");
 
+  /* 🔥 SAFETY */
+
+  const safePlayers =
+    Array.isArray(players)
+      ? players
+      : [];
+
+  /* 🔍 FILTER */
+
   const filteredPlayers =
     useMemo(() => {
-      return players.filter(
+      return safePlayers.filter(
         (player) =>
-          player.name
+          player?.name
             ?.toLowerCase()
             .includes(
               search.toLowerCase()
             )
       );
-    }, [players, search]);
+    }, [safePlayers, search]);
 
   return (
     <div className="players-tab">
 
-      {/* SEARCH */}
+      {/* 🔍 SEARCH */}
 
       <div className="players-search">
 
@@ -44,20 +53,40 @@ export default function PlayersTab({
 
       </div>
 
-      {/* GRID */}
+      {/* 📊 HEADER */}
 
-      <div className="players-grid">
+      <div className="players-header">
 
-        {filteredPlayers.map(
-          (player, index) => (
-            <PlayerCard
-              key={index}
-              player={player}
-            />
-          )
-        )}
+        <span>
+          {filteredPlayers.length} jogadores
+        </span>
 
       </div>
+
+      {/* 👥 GRID */}
+
+      {filteredPlayers.length > 0 ? (
+        <div className="players-grid">
+
+          {filteredPlayers.map(
+            (player, index) => (
+              <PlayerCard
+                key={index}
+                player={player}
+              />
+            )
+          )}
+
+        </div>
+      ) : (
+        <div className="players-empty">
+
+          <span>
+            Em breve o torneio será aberto para inscrições. Fique atento!
+          </span>
+
+        </div>
+      )}
 
     </div>
   );

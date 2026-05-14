@@ -10,9 +10,15 @@ import { fetchLimitlessPairings } from "../services/limitless/fetchLimitlessPair
 
 import { checkIfFinished } from "../utils/checkIfFinished.js";
 
+import { isValidTournamentData } from "../utils/isValidTournamentData.js";
+
 import { saveLiveTournament } from "../services/persistence/saveLiveTournament.js";
 
 import { saveFinishedTournament } from "../services/persistence/saveFinishedTournament.js";
+
+/*
+  🔥 Atualiza no máximo a cada 5 minutos
+*/
 
 const INTERVAL = 5 * 60 * 1000;
 
@@ -23,14 +29,34 @@ export function startLimitlessWorker() {
     for (const slug of slugs) {
       const cache = tournamentCache[slug];
 
-      if (cache?.finalized || cache?.isFetching) {
+      if (!cache) {
+        continue;
+      }
+
+      /*
+        🔒 evita múltiplos fetches
+      */
+
+      if (cache.isFetching) {
+        continue;
+      }
+
+      /*
+        🏁 torneio finalizado não atualiza mais
+      */
+
+      if (cache.finalized) {
         continue;
       }
 
       try {
-        console.log(`🔄 Updating ${slug}`);
+        console.log(`🔄 Worker updating ${slug}`);
 
-        cache.isFetching = true;
+        tournamentCache[slug] = {
+          ...cache,
+
+          isFetching: true,
+        };
 
         const standings = await fetchLimitlessStandings(slug);
 
@@ -38,7 +64,34 @@ export function startLimitlessWorker() {
 
         const bracket = await fetchLimitlessBracket(slug, cache.format);
 
+        /*
+          ❌ scrape quebrado
+          mantém cache antigo
+        */
+
+        if (
+          !isValidTournamentData({
+            standings,
+            pairings,
+            bracket,
+          })
+        ) {
+          console.log(`⚠️ Invalid data for ${slug}, keeping previous cache`);
+
+          tournamentCache[slug] = {
+            ...cache,
+
+            isFetching: false,
+          };
+
+          continue;
+        }
+
         const finalized = checkIfFinished(bracket);
+
+        /*
+          ✅ sobrescreve somente com dados válidos
+        */
 
         tournamentCache[slug] = {
           ...cache,
@@ -49,16 +102,16 @@ export function startLimitlessWorker() {
 
           bracket,
 
-          updatedAt: Date.now(),
-
           finalized,
 
-          format: cache.format,
+          updatedAt: Date.now(),
 
           isFetching: false,
         };
 
-        /* 💾 SAVE LIVE */
+        /*
+          💾 salva snapshot
+        */
 
         await saveLiveTournament({
           slug,
@@ -70,12 +123,16 @@ export function startLimitlessWorker() {
           bracket,
 
           finalized,
+
+          format: cache.format,
         });
 
-        /* 🏆 SAVE HISTORY */
+        /*
+          🏆 salva histórico final
+        */
 
-        if (finalized && !cache?.finalized) {
-          console.log(`🏁 Finalized ${slug}`);
+        if (finalized && !cache.finalized) {
+          console.log(`🏁 Tournament finalized ${slug}`);
 
           await saveFinishedTournament({
             slug,
@@ -90,7 +147,17 @@ export function startLimitlessWorker() {
 
         console.log(`✅ Updated ${slug}`);
       } catch (err) {
-        console.error(`❌ Erro scraping ${slug}`, err);
+        console.error(`❌ Worker error ${slug}`, err);
+
+        /*
+          🔓 libera lock
+        */
+
+        tournamentCache[slug] = {
+          ...cache,
+
+          isFetching: false,
+        };
       }
     }
   }, INTERVAL);

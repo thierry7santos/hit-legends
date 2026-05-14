@@ -3,6 +3,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+/* 🏆 FETCH ROUND */
+
 async function fetchRound(slug, round) {
   const url = `https://play.limitlesstcg.com/tournament/${slug}/pairings?round=${round}`;
 
@@ -14,6 +16,8 @@ async function fetchRound(slug, round) {
 
   $("table tbody tr").each((_, row) => {
     const cols = $(row).find("td");
+
+    /* ❌ linha inválida */
 
     if (cols.length < 5) {
       return;
@@ -29,30 +33,41 @@ async function fetchRound(slug, round) {
 
     const player2Raw = $(cols[4]).text().replace(/\s+/g, " ").trim();
 
+    /* 🧹 remove record do nome */
+
     const player1 = player1Raw.replace(/\d+-\d+-\d+$/, "").trim();
 
     const player2 = player2Raw.replace(/\d+-\d+-\d+$/, "").trim();
 
+    /* 🏆 WINNER */
+
+    let winner = null;
+
+    if (Number(score1) > Number(score2)) {
+      winner = 1;
+    }
+
+    if (Number(score2) > Number(score1)) {
+      winner = 2;
+    }
+
     pairings.push({
-      table,
+      table: table || "-",
 
-      player1,
+      player1: player1 || "Unknown",
 
-      player2,
+      player2: player2 || "Unknown",
 
       score: `${score1}-${score2}`,
 
-      winner:
-        Number(score1) > Number(score2)
-          ? 1
-          : Number(score2) > Number(score1)
-            ? 2
-            : null,
+      winner,
     });
   });
 
   return pairings;
 }
+
+/* 🏆 MAIN */
 
 export async function fetchLimitlessPairings(slug) {
   const rounds = [];
@@ -64,7 +79,7 @@ export async function fetchLimitlessPairings(slug) {
 
     /* ❌ round inexistente */
 
-    if (!matches.length) {
+    if (!Array.isArray(matches) || matches.length === 0) {
       break;
     }
 
@@ -79,7 +94,7 @@ export async function fetchLimitlessPairings(slug) {
     currentRound++;
   }
 
-  /* 🔥 rounds anteriores finalizadas */
+  /* ✅ rounds anteriores finalizadas */
 
   rounds.forEach((round, index) => {
     if (index < rounds.length - 1) {
@@ -87,9 +102,7 @@ export async function fetchLimitlessPairings(slug) {
     }
   });
 
-  return {
-    currentRound: rounds.length,
+  /* 🔥 SEMPRE ARRAY */
 
-    rounds,
-  };
+  return rounds;
 }

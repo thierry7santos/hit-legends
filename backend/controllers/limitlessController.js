@@ -8,25 +8,70 @@ import { fetchLimitlessStandings } from "../services/limitless/fetchLimitlessSta
 
 import { fetchLimitlessPairings } from "../services/limitless/fetchLimitlessPairings.js";
 
-/* 🏆 INIT CACHE */
+import { checkIfFinished } from "../utils/checkIfFinished.js";
 
-async function initializeTournamentCache(slug, format) {
-  console.log(`🆕 Creating cache for ${slug}`);
+import { saveLiveTournament } from "../services/persistence/saveLiveTournament.js";
+
+import { isValidTournamentData } from "../utils/isValidTournamentData.js";
+
+/* ⏰ 5 MIN */
+
+const CACHE_DURATION = 5 * 60 * 1000;
+
+/* 🔥 REFRESH CACHE */
+
+async function refreshTournamentCache(slug, format) {
+  const cache = tournamentCache[slug];
 
   /* 🔒 LOCK */
 
-  tournamentCache[slug] = {
-    isFetching: true,
-  };
+  if (cache?.isFetching) {
+    return cache;
+  }
 
   try {
+    tournamentCache[slug] = {
+      ...cache,
+
+      isFetching: true,
+    };
+
+    console.log(`🔥 Refreshing ${slug}`);
+
+    /* 🔥 FETCH */
+
     const standings = await fetchLimitlessStandings(slug);
 
     const pairings = await fetchLimitlessPairings(slug);
 
     const bracket = await fetchLimitlessBracket(slug, format);
 
-    tournamentCache[slug] = {
+    const finalized = checkIfFinished(bracket);
+
+    /* ✅ VALIDATE */
+
+    const isValid = isValidTournamentData({
+      standings,
+      pairings,
+    });
+
+    /* ❌ INVALID */
+
+    if (!isValid) {
+      console.log(`⚠️ Invalid scrape ignored ${slug}`);
+
+      tournamentCache[slug] = {
+        ...cache,
+
+        isFetching: false,
+      };
+
+      return cache || null;
+    }
+
+    /* ✅ NEW CACHE */
+
+    const newCache = {
       standings,
 
       pairings,
@@ -35,16 +80,46 @@ async function initializeTournamentCache(slug, format) {
 
       updatedAt: Date.now(),
 
-      finalized: false,
+      finalized,
 
       format,
 
       isFetching: false,
     };
-  } catch (err) {
-    delete tournamentCache[slug];
 
-    throw err;
+    tournamentCache[slug] = newCache;
+
+    /* 💾 SAVE */
+
+    await saveLiveTournament({
+      slug,
+
+      standings,
+
+      pairings,
+
+      bracket,
+
+      finalized,
+
+      format,
+    });
+
+    console.log(`✅ Refreshed ${slug}`);
+
+    return newCache;
+  } catch (err) {
+    console.error(`❌ Refresh error ${slug}`, err);
+
+    /* 🔓 RELEASE LOCK */
+
+    tournamentCache[slug] = {
+      ...cache,
+
+      isFetching: false,
+    };
+
+    return cache || null;
   }
 }
 
@@ -56,19 +131,32 @@ export async function getStandings(req, res) {
 
     const format = req.query.format || "swiss_bracket";
 
-    if (!tournamentCache[slug]) {
-      await initializeTournamentCache(slug, format);
+    const cache = tournamentCache[slug];
+
+    /* ✅ CACHE EXISTS */
+
+    if (cache?.standings) {
+      const updatedAt =
+        typeof cache.updatedAt === "string"
+          ? new Date(cache.updatedAt).getTime()
+          : cache.updatedAt;
+
+      const isExpired = Date.now() - updatedAt > CACHE_DURATION;
+
+      /* 🔄 BACKGROUND REFRESH */
+
+      if (isExpired && !cache.isFetching) {
+        refreshTournamentCache(slug, format);
+      }
+
+      return res.json(cache.standings);
     }
 
-    /* ⏳ FETCH EM ANDAMENTO */
+    /* ❌ NO CACHE */
 
-    if (tournamentCache[slug]?.isFetching) {
-      return res.status(202).json({
-        loading: true,
-      });
-    }
+    const fresh = await refreshTournamentCache(slug, format);
 
-    return res.json(tournamentCache[slug].standings);
+    return res.json(fresh?.standings || []);
   } catch (error) {
     console.error(error);
 
@@ -86,19 +174,37 @@ export async function getPairings(req, res) {
 
     const format = req.query.format || "swiss_bracket";
 
-    if (!tournamentCache[slug]) {
-      await initializeTournamentCache(slug, format);
+    const cache = tournamentCache[slug];
+
+    /* ✅ CACHE EXISTS */
+
+    if (cache?.pairings) {
+      const updatedAt =
+        typeof cache.updatedAt === "string"
+          ? new Date(cache.updatedAt).getTime()
+          : cache.updatedAt;
+
+      const isExpired = Date.now() - updatedAt > CACHE_DURATION;
+
+      /* 🔄 BACKGROUND REFRESH */
+
+      if (isExpired && !cache.isFetching) {
+        refreshTournamentCache(slug, format);
+      }
+
+      return res.json(cache.pairings);
     }
 
-    /* ⏳ FETCH EM ANDAMENTO */
+    /* ❌ NO CACHE */
 
-    if (tournamentCache[slug]?.isFetching) {
-      return res.status(202).json({
-        loading: true,
-      });
-    }
+    const fresh = await refreshTournamentCache(slug, format);
 
-    return res.json(tournamentCache[slug].pairings);
+    return res.json(
+      fresh?.pairings || {
+        currentRound: 0,
+        rounds: [],
+      },
+    );
   } catch (error) {
     console.error(error);
 
@@ -116,19 +222,32 @@ export async function getBracket(req, res) {
 
     const format = req.query.format || "single_elimination";
 
-    if (!tournamentCache[slug]) {
-      await initializeTournamentCache(slug, format);
+    const cache = tournamentCache[slug];
+
+    /* ✅ CACHE EXISTS */
+
+    if (cache?.bracket) {
+      const updatedAt =
+        typeof cache.updatedAt === "string"
+          ? new Date(cache.updatedAt).getTime()
+          : cache.updatedAt;
+
+      const isExpired = Date.now() - updatedAt > CACHE_DURATION;
+
+      /* 🔄 BACKGROUND REFRESH */
+
+      if (isExpired && !cache.isFetching) {
+        refreshTournamentCache(slug, format);
+      }
+
+      return res.json(cache.bracket);
     }
 
-    /* ⏳ FETCH EM ANDAMENTO */
+    /* ❌ NO CACHE */
 
-    if (tournamentCache[slug]?.isFetching) {
-      return res.status(202).json({
-        loading: true,
-      });
-    }
+    const fresh = await refreshTournamentCache(slug, format);
 
-    return res.json(tournamentCache[slug].bracket);
+    return res.json(fresh?.bracket || []);
   } catch (error) {
     console.error(error);
 

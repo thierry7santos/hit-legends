@@ -1,7 +1,10 @@
+/* 📦 PAGE */
+
 .tournaments {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+
+  gap: 28px;
 }
 
 /* 🔥 HERO */
@@ -11,31 +14,67 @@
 
   overflow: hidden;
 
-  min-height: 240px;
+  min-height: 300px;
 
-  border-radius: 24px;
+  border-radius: 32px;
 
   display: flex;
   align-items: center;
 
-  padding: 36px;
+  padding: 42px;
+
+  isolation: isolate;
 
   background:
     linear-gradient(
-      to right,
-      rgba(0,0,0,0.82),
-      rgba(0,0,0,0.35)
+      90deg,
+      rgba(8,8,8,0.94) 0%,
+      rgba(8,8,8,0.78) 45%,
+      rgba(8,8,8,0.52) 100%
     ),
     url("/banners/banner1.jpg")
     center/cover;
 
   border: 1px solid
-    rgba(255,255,255,0.06);
+    rgba(242,183,5,0.10);
 
   box-shadow:
-    0 0 35px
-    rgba(255,200,0,0.12);
+    0 0 45px
+      rgba(242,183,5,0.05),
+    inset 0 1px 0
+      rgba(255,255,255,0.04);
 }
+
+/* ✨ GOLD AMBIENT */
+
+.tournament-hero::before {
+  content: "";
+
+  position: absolute;
+
+  top: -120px;
+  right: -120px;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(242,183,5,0.18),
+      transparent 68%
+    );
+
+  filter: blur(10px);
+
+  z-index: 0;
+
+  pointer-events: none;
+}
+
+/* ✨ EDGE LIGHT */
 
 .tournament-hero::after {
   content: "";
@@ -44,83 +83,135 @@
 
   inset: 0;
 
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(255,200,0,0.18),
-      transparent 40%
-    );
-
   pointer-events: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(242,183,5,0.06),
+      transparent 30%
+    );
 }
+
+/* 🧠 CONTENT */
 
 .hero-content {
   position: relative;
   z-index: 2;
 
-  max-width: 520px;
+  max-width: 620px;
 }
 
+/* 🏷️ BADGE */
+
 .featured-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
 
-  margin-bottom: 14px;
+  gap: 8px;
 
-  padding: 6px 12px;
+  margin-bottom: 18px;
+
+  padding: 9px 16px;
 
   border-radius: 999px;
 
+  background:
+    rgba(242,183,5,0.10);
+
+  border: 1px solid
+    rgba(242,183,5,0.18);
+
+  color: #F2B705;
+
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
 
   letter-spacing: 1px;
 
-  background:
-    rgba(255,200,0,0.15);
-
-  color: #ffd54f;
-}
-
-.hero-content h1 {
-  font-size: 34px;
-  margin-bottom: 12px;
-}
-
-.hero-content p {
-  opacity: 0.75;
-
-  line-height: 1.6;
-
-  margin-bottom: 18px;
-}
-
-.hero-content button {
-  height: 44px;
-
-  padding: 0 18px;
-
-  border: none;
-  border-radius: 12px;
-
-  cursor: pointer;
-
-  font-weight: bold;
-
-  background:
-    hsl(var(--primary));
-
-  transition: 0.2s;
-}
-
-.hero-content button:hover {
-  transform: scale(1.04);
+  text-transform: uppercase;
 
   box-shadow:
     0 0 18px
-    rgba(255,200,0,0.35);
+    rgba(242,183,5,0.06);
 }
 
-/* 📋 GRID */
+/* 🏆 TITLE */
+
+.hero-content h1 {
+  color: white;
+
+  font-size: 52px;
+  font-weight: 900;
+
+  line-height: 1.05;
+
+  letter-spacing: -2px;
+
+  margin-bottom: 18px;
+
+  text-shadow:
+    0 4px 18px
+    rgba(0,0,0,0.45);
+}
+
+/* 📝 DESCRIPTION */
+
+.hero-content p {
+  max-width: 560px;
+
+  color:
+    rgba(255,255,255,0.74);
+
+  font-size: 16px;
+  font-weight: 500;
+
+  line-height: 1.8;
+
+  margin-bottom: 26px;
+}
+
+/* 🚀 BUTTON */
+
+.hero-content button {
+  position: relative;
+
+  height: 52px;
+
+  padding: 0 26px;
+
+  border: none;
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  background: #F2B705;
+
+  color: #111;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  letter-spacing: 0.3px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.hero-content button:hover {
+  transform:
+    translateY(-2px);
+
+  filter: brightness(1.03);
+
+  box-shadow:
+    0 0 30px
+    rgba(242,183,5,0.35);
+}
+
+/* 📋 TOURNAMENT GRID */
 
 .tournament-list {
   display: grid;
@@ -128,8 +219,32 @@
   grid-template-columns:
     repeat(
       auto-fill,
-      minmax(260px, 1fr)
+      minmax(300px, 1fr)
     );
 
-  gap: 18px;
+  gap: 22px;
+}
+
+/* 📱 MOBILE */
+
+@media (max-width: 768px) {
+  .tournament-hero {
+    min-height: auto;
+
+    padding: 28px;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+
+    line-height: 1.1;
+  }
+
+  .hero-content p {
+    font-size: 14px;
+  }
+
+  .tournament-list {
+    grid-template-columns: 1fr;
+  }
 }

@@ -5,17 +5,18 @@ import "./StandingRow.css";
 export default function StandingRow({
   player,
   index,
+  showPoints = true,
 }) {
   return (
     <div className="standing-row">
 
-      {/* RANK */}
+      {/* 🏅 RANK */}
 
       <div className="standing-rank">
         #{player.rank || index + 1}
       </div>
 
-      {/* PLAYER */}
+      {/* 👤 PLAYER */}
 
       <div className="standing-player">
 
@@ -37,17 +38,19 @@ export default function StandingRow({
 
       </div>
 
-      {/* RECORD */}
+      {/* 📊 RECORD */}
 
       <div className="standing-record">
         {player.record || "-"}
       </div>
 
-      {/* POINTS */}
+      {/* ⭐ POINTS */}
 
-      <div className="standing-points">
-        {player.points || 0} pts
-      </div>
+      {showPoints && (
+        <div className="standing-points">
+          {player.points || 0} pts
+        </div>
+      )}
 
     </div>
   );

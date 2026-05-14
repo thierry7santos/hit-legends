@@ -1,3 +1,5 @@
+// backend/services/persistence/saveLiveTournament.js
+
 import { supabase } from "../../config/supabaseClient.js";
 
 export async function saveLiveTournament({
@@ -11,15 +13,15 @@ export async function saveLiveTournament({
   const payload = {
     slug,
 
-    standings,
+    standings: standings || [],
 
-    pairings,
+    pairings: pairings || [],
 
-    bracket,
+    bracket: bracket || null,
 
-    finalized,
+    finalized: finalized || false,
 
-    format,
+    format: format || "swiss_bracket",
 
     updated_at: new Date().toISOString(),
   };
@@ -29,6 +31,8 @@ export async function saveLiveTournament({
   });
 
   if (error) {
+    console.error("❌ saveLiveTournament error", error);
+
     throw error;
   }
 }

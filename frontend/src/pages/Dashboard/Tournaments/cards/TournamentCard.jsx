@@ -1,3 +1,5 @@
+// frontend\src\pages\Dashboard\Tournaments\cards\TournamentCard.jsx
+
 import { useNavigate } from "react-router-dom";
 
 import "./TournamentCard.css";

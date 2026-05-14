@@ -1,21 +1,29 @@
-import { useState } from "react";
+// src/pages/Dashboard/Tournaments/components/PairingsTab/PairingsTab.jsx
+
+import { useEffect, useState } from "react";
 
 import PairingCard from "../../cards/PairingCard";
 
 import "./PairingsTab.css";
 
 export default function PairingsTab({
-  pairings,
+  pairings = [],
 }) {
   const [selectedRound, setSelectedRound] =
-    useState(
-      pairings.length || 1,
-    );
+    useState(1);
+
+  useEffect(() => {
+    if (pairings.length > 0) {
+      setSelectedRound(
+        pairings.length
+      );
+    }
+  }, [pairings]);
 
   const currentRoundData =
     pairings.find(
       (round) =>
-        round.round === selectedRound,
+        round.round === selectedRound
     );
 
   return (
@@ -26,6 +34,10 @@ export default function PairingsTab({
       <div className="pairings-header">
 
         <div>
+
+          <div className="pairings-badge">
+            Pairings
+          </div>
 
           <h2>
             Rodadas
@@ -49,8 +61,8 @@ export default function PairingsTab({
                 (prev) =>
                   Math.max(
                     prev - 1,
-                    1,
-                  ),
+                    1
+                  )
               )
             }
           >
@@ -71,8 +83,8 @@ export default function PairingsTab({
                 (prev) =>
                   Math.min(
                     prev + 1,
-                    pairings.length,
-                  ),
+                    pairings.length
+                  )
               )
             }
           >
@@ -88,6 +100,8 @@ export default function PairingsTab({
       {currentRoundData &&
         !currentRoundData.finalized && (
           <div className="live-round-banner">
+
+            <span className="live-dot" />
 
             Rodada em andamento
 
@@ -106,12 +120,14 @@ export default function PairingsTab({
                 key={index}
                 match={match}
               />
-            ),
+            )
           )
         ) : (
           <div className="empty-pairings">
 
-            Nenhum pairing encontrado.
+            <span>
+              Nenhum pairing encontrado.
+            </span>
 
           </div>
         )}
