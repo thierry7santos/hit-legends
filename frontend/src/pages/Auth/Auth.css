@@ -1,0 +1,295 @@
+/* Auth.css */
+
+.auth-page {
+  position: relative;
+
+  min-height: 100vh;
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at top left, rgba(255,196,0,0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(255,196,0,0.08), transparent 28%),
+    linear-gradient(
+      180deg,
+      #090b10,
+      #05070b
+    );
+}
+
+.auth-background {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(circle at center, rgba(255,196,0,0.06), transparent 45%);
+
+  filter: blur(60px);
+
+  opacity: 0.8;
+}
+
+.auth-card {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  max-width: 460px;
+
+  padding: 38px;
+
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.03)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 0 60px rgba(0,0,0,0.45),
+    0 0 40px rgba(255,196,0,0.06);
+}
+
+.auth-header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.auth-logo {
+  width: 110px;
+
+  height: 110px;
+
+  margin: 0 auto 22px;
+
+  border-radius: 28px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 0 30px rgba(255,196,0,0.08),
+    inset 0 0 25px rgba(255,255,255,0.02);
+
+  backdrop-filter: blur(12px);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.auth-logo::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(255,196,0,0.18),
+      transparent 65%
+    );
+
+  pointer-events: none;
+}
+
+.auth-logo img {
+  width: 78px;
+
+  height: 78px;
+
+  object-fit: contain;
+
+  position: relative;
+
+  z-index: 1;
+
+  filter:
+    drop-shadow(
+      0 0 14px rgba(255,196,0,0.25)
+    );
+}
+
+.auth-header h1 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 2rem;
+}
+
+.auth-header p {
+  margin-top: 10px;
+
+  color: rgba(255,255,255,0.6);
+
+  font-size: 0.95rem;
+}
+
+.auth-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.auth-input-group {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 16px;
+
+  height: 58px;
+
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.04);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.2s ease;
+
+  color: rgba(255,255,255,0.55);
+}
+
+.auth-input-group:focus-within {
+  border-color: rgba(255,196,0,0.4);
+
+  box-shadow:
+    0 0 24px rgba(255,196,0,0.08);
+}
+
+.auth-input-group input {
+  flex: 1;
+
+  height: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 0.96rem;
+}
+
+.auth-input-group input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+.auth-button {
+  margin-top: 10px;
+
+  height: 58px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  font-size: 1rem;
+
+  font-weight: 700;
+
+  color: #111;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe27a,
+      #ffc400
+    );
+
+  transition: all 0.2s ease;
+
+  box-shadow:
+    0 0 30px rgba(255,196,0,0.18);
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 0 40px rgba(255,196,0,0.28);
+}
+
+.auth-footer {
+  margin-top: 26px;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  color: rgba(255,255,255,0.5);
+
+  font-size: 0.92rem;
+}
+
+.auth-footer a {
+  color: #ffc400;
+
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    width: calc(100% - 24px);
+
+    padding: 28px;
+  }
+
+  .auth-header h1 {
+    font-size: 1.6rem;
+  }
+}

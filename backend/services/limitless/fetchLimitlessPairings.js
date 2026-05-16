@@ -3,21 +3,19 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-/* 🏆 FETCH ROUND */
-
 async function fetchRound(slug, round) {
   const url = `https://play.limitlesstcg.com/tournament/${slug}/pairings?round=${round}`;
+
+  console.log("🎮 PAIRINGS:", url);
 
   const { data } = await axios.get(url);
 
   const $ = cheerio.load(data);
 
-  const pairings = [];
+  const matches = [];
 
   $("table tbody tr").each((_, row) => {
     const cols = $(row).find("td");
-
-    /* ❌ linha inválida */
 
     if (cols.length < 5) {
       return;
@@ -33,41 +31,36 @@ async function fetchRound(slug, round) {
 
     const player2Raw = $(cols[4]).text().replace(/\s+/g, " ").trim();
 
-    /* 🧹 remove record do nome */
+    /* 🔥 REMOVE RECORD DOS NOMES */
 
     const player1 = player1Raw.replace(/\d+-\d+-\d+$/, "").trim();
 
     const player2 = player2Raw.replace(/\d+-\d+-\d+$/, "").trim();
 
-    /* 🏆 WINNER */
-
-    let winner = null;
-
-    if (Number(score1) > Number(score2)) {
-      winner = 1;
+    if (!player1 || !player2) {
+      return;
     }
 
-    if (Number(score2) > Number(score1)) {
-      winner = 2;
-    }
+    matches.push({
+      table,
 
-    pairings.push({
-      table: table || "-",
+      player1,
 
-      player1: player1 || "Unknown",
+      player2,
 
-      player2: player2 || "Unknown",
+      score: score1 && score2 ? `${score1}-${score2}` : "-",
 
-      score: `${score1}-${score2}`,
-
-      winner,
+      winner:
+        Number(score1) > Number(score2)
+          ? 1
+          : Number(score2) > Number(score1)
+            ? 2
+            : null,
     });
   });
 
-  return pairings;
+  return matches;
 }
-
-/* 🏆 MAIN */
 
 export async function fetchLimitlessPairings(slug) {
   const rounds = [];
@@ -77,16 +70,14 @@ export async function fetchLimitlessPairings(slug) {
   while (true) {
     const matches = await fetchRound(slug, currentRound);
 
-    /* ❌ round inexistente */
-
-    if (!Array.isArray(matches) || matches.length === 0) {
+    if (!matches.length) {
       break;
     }
 
     rounds.push({
-      round: currentRound,
+      round: `Round ${currentRound}`,
 
-      finalized: false,
+      finalized: currentRound < rounds.length,
 
       matches,
     });
@@ -94,15 +85,17 @@ export async function fetchLimitlessPairings(slug) {
     currentRound++;
   }
 
-  /* ✅ rounds anteriores finalizadas */
+  /* 🔥 TODAS EXCETO A ÚLTIMA FINALIZADAS */
 
   rounds.forEach((round, index) => {
-    if (index < rounds.length - 1) {
-      round.finalized = true;
-    }
+    round.finalized = index < rounds.length - 1;
   });
 
-  /* 🔥 SEMPRE ARRAY */
+  console.log(`✅ Pairings rounds: ${rounds.length}`);
 
-  return rounds;
+  return {
+    currentRound: rounds.length,
+
+    rounds,
+  };
 }

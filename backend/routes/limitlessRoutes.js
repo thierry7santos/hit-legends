@@ -8,7 +8,19 @@ import {
   getBracket,
 } from "../controllers/limitlessController.js";
 
+import { runCron } from "../controllers/cronController.js";
+
+import { registerTournament } from "../controllers/registerTournamentController.js";
+
 const router = express.Router();
+
+/* 🏆 REGISTER */
+
+router.post("/register", registerTournament);
+
+/* 🔄 CRON */
+
+router.get("/cron", runCron);
 
 /* 🏆 STANDINGS */
 

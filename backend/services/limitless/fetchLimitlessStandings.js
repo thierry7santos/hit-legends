@@ -1,12 +1,16 @@
+// backend/services/limitless/fetchLimitlessStandings.js
+
 import axios from "axios";
 import * as cheerio from "cheerio";
 
 export async function fetchLimitlessStandings(slug) {
   const url = `https://play.limitlesstcg.com/tournament/${slug}/standings`;
 
-  const { data: html } = await axios.get(url);
+  console.log("📊 STANDINGS:", url);
 
-  const $ = cheerio.load(html);
+  const { data } = await axios.get(url);
+
+  const $ = cheerio.load(data);
 
   const standings = [];
 
@@ -25,13 +29,22 @@ export async function fetchLimitlessStandings(slug) {
 
     const record = $(cols[3]).text().trim();
 
+    if (!name) {
+      return;
+    }
+
     standings.push({
-      rank,
+      rank: Number(rank) || standings.length + 1,
+
       name,
-      points,
+
+      points: Number(points) || 0,
+
       record,
     });
   });
+
+  console.log(`✅ Standings parsed: ${standings.length}`);
 
   return standings;
 }

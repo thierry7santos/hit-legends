@@ -1,11 +1,17 @@
 // backend/utils/isValidTournamentData.js
 
 export function isValidTournamentData({ standings, pairings, bracket }) {
-  const validStandings = Array.isArray(standings);
+  /* 🏆 standings */
 
-  const validPairings = Array.isArray(pairings);
+  const validStandings = Array.isArray(standings) && standings.length > 0;
 
-  const validBracket = bracket !== undefined;
+  /* 🔥 pairings */
+
+  const validPairings = pairings && Array.isArray(pairings.rounds);
+
+  /* 🏆 bracket opcional */
+
+  const validBracket = bracket === undefined || Array.isArray(bracket);
 
   return validStandings && validPairings && validBracket;
 }

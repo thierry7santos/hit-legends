@@ -1,114 +1,127 @@
-// frontend\src\pages\Dashboard\Tournaments\cards\TournamentCard.jsx
-
 import { useNavigate } from "react-router-dom";
+
+import {
+  CalendarDays,
+  Users,
+  Trophy,
+  ChevronRight,
+} from "lucide-react";
 
 import "./TournamentCard.css";
 
 export default function TournamentCard({
   tournament,
 }) {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
+
+  function formatDate(date) {
+    if (!date) return "Sem data";
+
+    return new Date(date)
+      .toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+  }
 
   return (
     <div
-      className={`tournament-card ${tournament.status}`}
+      className="tournament-card"
       onClick={() =>
         navigate(
           `/tournaments/${tournament.id}`
         )
       }
     >
-      {/* glow */}
 
-      <div className="card-glow" />
+      {/* BACKGROUND */}
 
-      {/* header */}
+      <div className="tournament-card-bg" />
 
-      <div className="tournament-header">
+      {/* TOP */}
 
-        <span
-          className={`status ${tournament.status}`}
-        >
-          {getStatusLabel(
-            tournament.status
-          )}
+      <div className="tournament-card-top">
+
+        <span className="tournament-status">
+          {tournament.status ||
+            "Em breve"}
         </span>
+
+        <div className="tournament-format">
+          {tournament.format ||
+            "STANDARD"}
+        </div>
 
       </div>
 
-      {/* body */}
+      {/* CONTENT */}
 
-      <div className="tournament-body">
+      <div className="tournament-card-content">
 
-        <h3>
+        <h2>
           {tournament.name}
-        </h3>
+        </h2>
 
-        <p>
+        <p> {/* mudar para descrição editavel depois */}
           {tournament.description ||
-            "Participe da comunidade e dispute contra os melhores jogadores."}
+            "Tem coragem para desafiar os melhores?"}
         </p>
 
       </div>
 
-      {/* footer */}
+      {/* INFO */}
 
-      <div className="tournament-footer">
+      <div className="tournament-card-info">
 
-        <div className="info">
-          👥 {tournament.players_count || 0}
+        <div className="info-item">
+
+          <CalendarDays size={16} />
+
+          <span>
+            {formatDate(
+              tournament.start_date
+            )}
+          </span>
+
         </div>
 
-        <div className="info">
-          🏆{" "}
-          {formatTournamentFormat(
-            tournament.format
-          )}
+        <div className="info-item">
+
+          <Users size={16} />
+
+          <span>
+            {tournament.players ||
+              0} jogadores
+          </span>
+
         </div>
+
+        {/* <div className="info-item">
+
+          <Trophy size={16} />
+
+          <span>
+            Ranked
+          </span>
+
+        </div> */}
+
+      </div>
+
+      {/* FOOTER */}
+
+      <div className="tournament-card-footer">
+
+        <span>
+          Ver detalhes
+        </span>
+
+        <ChevronRight size={18} />
 
       </div>
 
     </div>
   );
-}
-
-/* 🔥 STATUS */
-
-function getStatusLabel(status) {
-  if (status === "open")
-    return "Inscrições abertas";
-
-  if (status === "live")
-    return "Ao vivo";
-
-  if (status === "finished")
-    return "Finalizado";
-
-  return status;
-}
-
-/* 🔥 FORMAT */
-
-function formatTournamentFormat(
-  format
-) {
-  if (
-    format ===
-    "single_elimination"
-  ) {
-    return "Mata-Mata";
-  }
-
-  if (
-    format ===
-    "double_elimination"
-  ) {
-    return "Dupla Eliminação";
-  }
-
-  if (format === "swiss_bracket") {
-    return "Suíço + Mata-Mata";
-  }
-
-  return format;
 }

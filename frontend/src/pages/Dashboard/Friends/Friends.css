@@ -1,0 +1,322 @@
+/* frontend/src/pages/Dashboard/Friends/Friends.css */
+
+.friends-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* HERO */
+
+.friends-hero {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 34px;
+
+  border-radius: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.friends-glow {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at right,
+      rgba(255,196,0,0.15),
+      transparent 40%
+    );
+}
+
+.friends-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.friends-badge {
+  display: inline-flex;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  margin-bottom: 16px;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.06em;
+
+  background: rgba(255,196,0,0.12);
+
+  border: 1px solid rgba(255,196,0,0.18);
+
+  color: #ffd24f;
+}
+
+.friends-hero h1 {
+  margin: 0;
+
+  font-size: 2.5rem;
+
+  color: white;
+}
+
+.friends-hero p {
+  margin-top: 10px;
+
+  color: rgba(255,255,255,0.65);
+}
+
+.friends-hero-icon {
+  position: relative;
+  z-index: 1;
+
+  color: #ffd24f;
+}
+
+/* SEARCH */
+
+.friends-search-card {
+  display: flex;
+
+  gap: 18px;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 22px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.friends-search {
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 18px;
+
+  height: 58px;
+
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.03);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  color: rgba(255,255,255,0.55);
+}
+
+.friends-search input {
+  flex: 1;
+
+  background: transparent;
+
+  border: none;
+
+  outline: none;
+
+  color: white;
+
+  font-size: 1rem;
+}
+
+.friends-add-btn {
+  height: 58px;
+
+  padding: 0 24px;
+
+  border-radius: 18px;
+
+  border: none;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe27a,
+      #ffbf00
+    );
+
+  color: #111;
+
+  transition: all 0.2s ease;
+}
+
+.friends-add-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 0 20px rgba(255,196,0,0.18);
+}
+
+/* GRID */
+
+.friends-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 18px;
+}
+
+.friend-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 22px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.2s ease;
+}
+
+.friend-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(255,196,0,0.18);
+
+  box-shadow:
+    0 0 24px rgba(255,196,0,0.08);
+}
+
+.friend-avatar {
+  width: 62px;
+
+  height: 62px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe27a,
+      #ffbf00
+    );
+
+  color: #111;
+
+  font-size: 1.4rem;
+
+  font-weight: 800;
+}
+
+.friend-info {
+  flex: 1;
+}
+
+.friend-info strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: white;
+}
+
+.friend-info span {
+  color: rgba(255,255,255,0.55);
+}
+
+.friend-status {
+  width: 14px;
+
+  height: 14px;
+
+  border-radius: 50%;
+}
+
+.friend-status.online {
+  background: #49ff88;
+
+  box-shadow:
+    0 0 12px rgba(73,255,136,0.6);
+}
+
+.friend-status.tournament {
+  background: #ffd24f;
+
+  box-shadow:
+    0 0 12px rgba(255,210,79,0.6);
+}
+
+.friend-status.offline {
+  background: #888;
+}
+
+@media (max-width: 900px) {
+  .friends-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .friends-search-card {
+    flex-direction: column;
+  }
+
+  .friends-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

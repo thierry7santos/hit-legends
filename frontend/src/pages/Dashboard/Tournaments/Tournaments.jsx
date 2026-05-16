@@ -1,3 +1,5 @@
+// frontend\src\pages\Dashboard\Tournaments\Tournaments.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +8,8 @@ import TournamentCard from "./cards/TournamentCard";
 import { getTournaments } from "../../../services/tournamentService";
 
 import "./Tournaments.css";
+
+import img from "../../../assets/tournament-bg.jpg";
 
 export default function Tournaments() {
   const navigate = useNavigate();
@@ -61,6 +65,17 @@ export default function Tournaments() {
       {featured && (
         <div className="tournament-hero">
 
+          <img
+            src={
+              featured.banner ||
+              img
+            }
+            alt={featured.name}
+            className="hero-image"
+          />
+
+          <div className="hero-overlay" />
+
           <div className="hero-content">
 
             <span className="featured-badge">
@@ -72,7 +87,8 @@ export default function Tournaments() {
             </h1>
 
             <p>
-              Domine os adversários e prove seu valor no maior evento da comunidade.
+              Domine os adversários e prove seu valor
+              no maior evento da comunidade.
             </p>
 
             <button

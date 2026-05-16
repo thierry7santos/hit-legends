@@ -1,9 +1,9 @@
+// frontend\src\pages\Dashboard\Profile\Profile.jsx
+
 import { useEffect, useState } from "react";
 
 import { getMyProfile } from "../../../services/playerService";
 import { useAuth } from "../../../context/AuthContext";
-
-import Card from "../../../components/ui/Card";
 
 import "./Profile.css";
 
@@ -22,8 +22,6 @@ export default function Profile() {
         setLoading(true);
 
         const data = await getMyProfile();
-
-        console.log("PROFILE:", data);
 
         setPlayer(data);
 
@@ -48,17 +46,17 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="container">
+      <div className="profile-page">
 
-        <div className="profile-card skeleton" />
+        <div className="profile-main-card skeleton-card" />
 
-        <div className="stats-grid">
+        <div className="profile-stats-grid">
 
-          <div className="skeleton stat" />
+          <div className="skeleton-stat" />
 
-          <div className="skeleton stat" />
+          <div className="skeleton-stat" />
 
-          <div className="skeleton stat" />
+          <div className="skeleton-stat" />
 
         </div>
 
@@ -70,7 +68,7 @@ export default function Profile() {
 
   if (error) {
     return (
-      <div className="error-box">
+      <div className="profile-error">
 
         <p>{error}</p>
 
@@ -86,38 +84,42 @@ export default function Profile() {
     );
   }
 
-  /* ❌ SEM PERFIL */
+  /* ❌ EMPTY */
 
   if (!player) {
     return (
-      <div className="empty-state">
+      <div className="profile-empty">
         Nenhum perfil encontrado
       </div>
     );
   }
 
   return (
-    <div className="container">
+    <div className="profile-page">
 
-      {/* 🔥 CARD PRINCIPAL */}
+      {/* HERO */}
 
-      <Card className="profile-card">
+      <section className="profile-main-card">
+
+        <div className="profile-glow" />
 
         <div className="profile-header">
 
           <div className="profile-avatar">
-            {player.nickname?.[0]?.toUpperCase() ||
-              "?"}
+            {player.nickname?.[0]?.toUpperCase() || "?"}
           </div>
 
-          <div>
+          <div className="profile-user-info">
 
-            <h2 className="profile-name">
-              {player.nickname ||
-                "Jogador"}
-            </h2>
+            <span className="profile-tag">
+              Jogador
+            </span>
 
-            <p className="profile-sub">
+            <h1>
+              {player.nickname || "Jogador"}
+            </h1>
+
+            <p>
               {user?.email}
             </p>
 
@@ -125,7 +127,7 @@ export default function Profile() {
 
         </div>
 
-        {/* INFO GRID */}
+        {/* INFO */}
 
         <div className="profile-info-grid">
 
@@ -155,40 +157,28 @@ export default function Profile() {
 
         </div>
 
-      </Card>
+      </section>
 
-      {/* 📊 STATS */}
+      {/* STATS */}
 
-      <div className="stats-grid">
+      <section className="profile-stats-grid">
 
-        <Card>
-          <Stat
-            title="Partidas"
-            value={
-              player.matches || 0
-            }
-          />
-        </Card>
+        <Stat
+          title="Partidas"
+          value={player.matches || 0}
+        />
 
-        <Card>
-          <Stat
-            title="Vitórias"
-            value={
-              player.wins || 0
-            }
-          />
-        </Card>
+        <Stat
+          title="Vitórias"
+          value={player.wins || 0}
+        />
 
-        <Card>
-          <Stat
-            title="Pontos"
-            value={
-              player.points || 0
-            }
-          />
-        </Card>
+        <Stat
+          title="Pontos"
+          value={player.points || 0}
+        />
 
-      </div>
+      </section>
 
     </div>
   );
@@ -198,15 +188,15 @@ export default function Profile() {
 
 function Info({ label, value }) {
   return (
-    <div>
+    <div className="profile-info-box">
 
-      <p className="info-label">
+      <span className="profile-info-label">
         {label}
-      </p>
+      </span>
 
-      <p className="info-value">
+      <span className="profile-info-value">
         {value}
-      </p>
+      </span>
 
     </div>
   );
@@ -216,13 +206,13 @@ function Info({ label, value }) {
 
 function Stat({ title, value }) {
   return (
-    <div className="stat-box">
+    <div className="profile-stat-card">
 
-      <p className="stat-title">
+      <span className="profile-stat-title">
         {title}
-      </p>
+      </span>
 
-      <h2 className="stat-value">
+      <h2 className="profile-stat-value">
         {value}
       </h2>
 

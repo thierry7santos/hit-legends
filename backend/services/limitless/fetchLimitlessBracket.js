@@ -9,23 +9,19 @@ export async function fetchLimitlessBracket(
 ) {
   let phase = 1;
 
-  /* 🏆 Swiss + Top Cut */
-
   if (format === "swiss_bracket") {
     phase = 2;
   }
 
   const url = `https://play.limitlesstcg.com/tournament/${slug}/standings?phase=${phase}&display=bracket`;
 
-  console.log("🔥 SCRAPING:", url);
+  console.log("🏆 BRACKET:", url);
 
   const { data } = await axios.get(url);
 
   const $ = cheerio.load(data);
 
   const rounds = [];
-
-  /* 🧩 PARSE ROUNDS */
 
   $(".round").each((_, roundEl) => {
     const roundName = $(roundEl).find(".round-name").first().text().trim();
@@ -45,6 +41,10 @@ export async function fetchLimitlessBracket(
 
         const p2 = $(players[1]).find(".name").text().trim();
 
+        if (!p1 || !p2) {
+          return;
+        }
+
         const winner = $(players[0]).hasClass("winner")
           ? 1
           : $(players[1]).hasClass("winner")
@@ -58,13 +58,23 @@ export async function fetchLimitlessBracket(
         });
       });
 
-    rounds.push({
-      round: roundName,
-      matches,
-    });
+    if (matches.length) {
+      rounds.push({
+        round: roundName,
+        matches,
+      });
+    }
   });
 
-  /* 🎯 CONVERTE PRA LIB */
+  console.log(`✅ Bracket rounds: ${rounds.length}`);
+
+  /* 🔥 sem bracket */
+
+  if (!rounds.length) {
+    return [];
+  }
+
+  /* 🎯 CONVERSÃO PRA LIB */
 
   const bracketMatches = [];
 
@@ -72,10 +82,8 @@ export async function fetchLimitlessBracket(
 
   let matchId = 1;
 
-  /* 🧩 cria todos matches */
-
   rounds.forEach((round, roundIndex) => {
-    round.matches.forEach((match, matchIndex) => {
+    round.matches.forEach((match) => {
       const currentId = matchId++;
 
       const obj = {
@@ -116,7 +124,6 @@ export async function fetchLimitlessBracket(
 
       matchMap.push({
         roundIndex,
-        matchIndex,
         obj,
       });
 
@@ -124,19 +131,13 @@ export async function fetchLimitlessBracket(
     });
   });
 
-  /* 🔗 conecta nextMatchId */
-
   rounds.forEach((_, roundIndex) => {
-    const currentRoundMatches = matchMap.filter(
-      (m) => m.roundIndex === roundIndex,
-    );
+    const current = matchMap.filter((m) => m.roundIndex === roundIndex);
 
-    const nextRoundMatches = matchMap.filter(
-      (m) => m.roundIndex === roundIndex + 1,
-    );
+    const next = matchMap.filter((m) => m.roundIndex === roundIndex + 1);
 
-    currentRoundMatches.forEach((match, index) => {
-      const target = nextRoundMatches[Math.floor(index / 2)];
+    current.forEach((match, index) => {
+      const target = next[Math.floor(index / 2)];
 
       if (target) {
         match.obj.nextMatchId = target.obj.id;

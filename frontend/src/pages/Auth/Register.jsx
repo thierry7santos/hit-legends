@@ -1,84 +1,184 @@
+//frontend\src\pages\Auth\Register.jsx
+
 import { Link } from "react-router-dom";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [phone, setPhone] = useState("");
-  const { handleRegister } = useAuth();
-  const navigate = useNavigate();
+import { useAuth } from "../../context/AuthContext";
 
-async function onSubmit() {
-  try {
-    await handleRegister(email, password, phone, nickname);
-    navigate("/");
-  } catch (err) {
-    alert(err.message);
+import {
+  User,
+  Mail,
+  Lock,
+  Smartphone,
+  UserPlus,
+} from "lucide-react";
+
+import "./Auth.css";
+
+import logo from "../../assets/hit-legends.png";
+
+export default function Register() {
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [nickname, setNickname] =
+    useState("");
+
+  const [phone, setPhone] =
+    useState("");
+
+  const { handleRegister } =
+    useAuth();
+
+  const navigate =
+    useNavigate();
+
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    try {
+      await handleRegister(
+        email,
+        password,
+        phone,
+        nickname
+      );
+
+      navigate("/");
+    } catch (err) {
+      alert(err.message);
+    }
   }
-}
 
   return (
-    <div style={container}>
-      <Card>
-        <h1>Cadastro</h1>
+    <div className="auth-page">
 
-        <input
-          placeholder="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          style={input}
-        />
+      <div className="auth-background" />
 
-        <input
-          placeholder="Telefone (opcional)"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          style={input}
-        />
+      <form
+        className="auth-card"
+        onSubmit={onSubmit}
+      >
 
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={input}
-        />
+        <div className="auth-header">
 
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={input}
-        />
+          <div className="auth-logo">
+            <img
+              src={logo}
+              alt="HitLegends TCG"
+            />
+          </div>
 
-        <Button onClick={onSubmit}>Criar conta</Button>
+          <h1>
+            Criar conta
+          </h1>
 
-        <p style={{ marginTop: "10px" }}>
-          Já tem conta? <Link to="/login">Entrar</Link>
-        </p>
-      </Card>
+          <p>
+            Entre para a comunidade
+            HitLegends TCG
+          </p>
+
+        </div>
+
+        <div className="auth-form">
+
+          <div className="auth-input-group">
+
+            <User size={18} />
+
+            <input
+              placeholder="Nickname"
+              value={nickname}
+              onChange={(e) =>
+                setNickname(
+                  e.target.value
+                )
+              }
+            />
+
+          </div>
+
+          <div className="auth-input-group">
+
+            <Smartphone size={18} />
+
+            <input
+              placeholder="Telefone (opcional)"
+              value={phone}
+              onChange={(e) =>
+                setPhone(
+                  e.target.value
+                )
+              }
+            />
+
+          </div>
+
+          <div className="auth-input-group">
+
+            <Mail size={18} />
+
+            <input
+              type="email"
+              placeholder="Seu email"
+              value={email}
+              onChange={(e) =>
+                setEmail(
+                  e.target.value
+                )
+              }
+            />
+
+          </div>
+
+          <div className="auth-input-group">
+
+            <Lock size={18} />
+
+            <input
+              type="password"
+              placeholder="Sua senha"
+              value={password}
+              onChange={(e) =>
+                setPassword(
+                  e.target.value
+                )
+              }
+            />
+
+          </div>
+
+          <button
+            className="auth-button"
+            type="submit"
+          >
+
+            <UserPlus size={18} />
+
+            Criar conta
+
+          </button>
+
+        </div>
+
+        <div className="auth-footer">
+
+          <span>
+            Já possui conta?
+          </span>
+
+          <Link to="/login">
+            Entrar
+          </Link>
+
+        </div>
+
+      </form>
+
     </div>
   );
 }
-
-const container = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-};
-
-const input = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px",
-  borderRadius: "8px",
-  border: "1px solid hsl(var(--border))",
-  background: "hsl(var(--input))",
-  color: "white",
-};

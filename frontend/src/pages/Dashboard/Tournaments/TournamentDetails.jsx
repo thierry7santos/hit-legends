@@ -2,6 +2,7 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import TournamentHero from "./components/TournamentHero/TournamentHero";
 import TournamentTabs from "./components/TournamentTabs/TournamentTabs";
@@ -88,6 +89,19 @@ export default function TournamentDetails() {
 
     async function refreshLiveData() {
       try {
+        /* 📝 REGISTER */
+
+        await axios.post(
+          "http://localhost:3000/api/limitless/register",
+          {
+            slug:
+              tournament.limitless_slug,
+
+            format:
+              tournament.format,
+          }
+        );
+
         const [
           standingsData,
           pairingsResponse,
@@ -111,9 +125,12 @@ export default function TournamentDetails() {
         ]);
 
         setPlayers(
-          Array.isArray(standingsData)
+          Array.isArray(
+            standingsData
+          )
             ? standingsData
-            : standingsData?.standings || []
+            : standingsData?.standings ||
+                []
         );
 
         setPairingsData(
@@ -224,8 +241,8 @@ export default function TournamentDetails() {
 
         {tab === "rounds" && (
           <PairingsTab
-            pairings={
-              pairingsData.rounds
+            pairingsData={
+              pairingsData
             }
           />
         )}

@@ -1,0 +1,320 @@
+/* frontend/src/pages/Dashboard/Ranking/Ranking.css */
+
+.ranking-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* HERO */
+
+.ranking-hero {
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 34px;
+
+  border-radius: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ranking-glow {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at right,
+      rgba(255,196,0,0.15),
+      transparent 40%
+    );
+}
+
+.ranking-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.ranking-badge {
+  display: inline-flex;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  margin-bottom: 16px;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.06em;
+
+  background: rgba(255,196,0,0.12);
+
+  border: 1px solid rgba(255,196,0,0.18);
+
+  color: #ffd24f;
+}
+
+.ranking-hero h1 {
+  margin: 0;
+
+  font-size: 2.5rem;
+
+  color: white;
+}
+
+.ranking-hero p {
+  margin-top: 10px;
+
+  color: rgba(255,255,255,0.65);
+}
+
+.ranking-hero-icon {
+  position: relative;
+  z-index: 1;
+
+  color: #ffd24f;
+}
+
+/* PODIUM */
+
+.ranking-podium {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+}
+
+.podium-card {
+  padding: 26px;
+
+  border-radius: 28px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  transition: all 0.2s ease;
+}
+
+.podium-card:hover {
+  transform: translateY(-4px);
+
+  border-color: rgba(255,196,0,0.18);
+
+  box-shadow:
+    0 0 30px rgba(255,196,0,0.08);
+}
+
+.podium-top {
+  color: #ffd24f;
+
+  margin-bottom: 16px;
+}
+
+.podium-avatar {
+  width: 82px;
+
+  height: 82px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe27a,
+      #ffbf00
+    );
+
+  color: #111;
+
+  font-size: 2rem;
+
+  font-weight: 800;
+}
+
+.podium-card h3 {
+  margin: 0;
+
+  color: white;
+}
+
+.podium-card span {
+  color: rgba(255,255,255,0.6);
+}
+
+/* TABLE */
+
+.ranking-table-wrapper {
+  padding: 28px;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ranking-table-header {
+  margin-bottom: 24px;
+}
+
+.ranking-table-header h2 {
+  margin: 0;
+
+  color: white;
+}
+
+.ranking-table-header span {
+  color: rgba(255,255,255,0.55);
+}
+
+.ranking-table {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ranking-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-radius: 20px;
+
+  background: rgba(255,255,255,0.03);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  transition: all 0.2s ease;
+}
+
+.ranking-row:hover {
+  border-color: rgba(255,196,0,0.18);
+
+  transform: translateX(4px);
+}
+
+.ranking-position {
+  width: 70px;
+
+  font-weight: 800;
+
+  color: #ffd24f;
+}
+
+.ranking-player {
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.ranking-avatar {
+  width: 54px;
+
+  height: 54px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe27a,
+      #ffbf00
+    );
+
+  color: #111;
+
+  font-weight: 800;
+}
+
+.ranking-player strong {
+  display: block;
+
+  color: white;
+}
+
+.ranking-player span {
+  color: rgba(255,255,255,0.55);
+
+  font-size: 0.9rem;
+}
+
+.ranking-points {
+  font-weight: 800;
+
+  color: #ffd24f;
+}
+
+@media (max-width: 900px) {
+  .ranking-podium {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-row {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 16px;
+  }
+
+  .ranking-points {
+    margin-left: 68px;
+  }
+}

@@ -1,7 +1,17 @@
+// frontend\src\pages\Dashboard\Home\Home.jsx
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Card from "../../../components/ui/Card";
+import {
+  Trophy,
+  Swords,
+  Store,
+  ChevronRight,
+  Crown,
+  Sparkles,
+} from "lucide-react";
+
 import Carousel from "../../../components/ui/Carousel";
 
 import { getHomeData } from "../../../services/homeService";
@@ -9,16 +19,22 @@ import { getHomeData } from "../../../services/homeService";
 import "./Home.css";
 
 export default function Home() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [data, setData] = useState(null);
+  const [data, setData] =
+    useState(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await getHomeData();
+        const res =
+          await getHomeData();
 
-        console.log("HOME DATA:", res);
+        console.log(
+          "HOME DATA:",
+          res
+        );
 
         setData(res);
       } catch (err) {
@@ -31,102 +47,289 @@ export default function Home() {
 
   if (!data) {
     return (
-      <div className="loading-screen">
-        Carregando...
+      <div className="home-loading">
+
+        <div className="home-loader" />
+
+        <span>
+          Carregando Home...
+        </span>
+
       </div>
     );
   }
 
   return (
-    <div className="home">
+    <div className="home-page">
 
-      {/* 🎞️ CARROSSEL */}
-      <Carousel slides={data.banners || []} />
+      {/* HERO */}
 
-      {/* 🔥 BANNER */}
-      <div className="home-banner">
+      <section className="hero-section">
 
-        <div className="banner-content">
-          <h1>Próximo Torneio</h1>
+        <div className="hero-glow" />
+
+        <div className="hero-left">
+
+          <div className="hero-badge">
+
+            <Sparkles size={16} />
+
+            Plataforma Oficial
+            da Comunidade
+
+          </div>
+
+          <h1>
+            O HUB competitivo
+            da comunidade
+            Pokémon TCG Live
+          </h1>
 
           <p>
-            Domine o meta. Mostre sua estratégia.
+            Rankings, torneios,
+            pairings em tempo real,
+            notificações inteligentes
+            e tudo que a comunidade
+            precisa em um só lugar.
           </p>
 
-          <button
-            onClick={() =>
-              navigate("/tournaments")
-            }
-          >
-            Ver torneios
-          </button>
+          <div className="hero-actions">
+
+            <button
+              className="primary-btn"
+              onClick={() =>
+                navigate(
+                  "/tournaments"
+                )
+              }
+            >
+
+              Ver torneios
+
+              <ChevronRight
+                size={18}
+              />
+
+            </button>
+
+            <button
+              className="secondary-btn"
+              onClick={() =>
+                navigate(
+                  "/ranking"
+                )
+              }
+            >
+              Ranking Global
+            </button>
+
+          </div>
+
         </div>
 
-      </div>
+        <div className="hero-right">
 
-      {/* 🏆 CAMPEÕES */}
-      <div className="champions">
+          <div className="hero-stat-card">
 
-        {(data.champions || []).map((c, i) => (
-          <div
-            key={i}
-            className="champion-card"
-          >
-            <div className="champion-avatar">
-              {c.nickname?.[0] || "?"}
+            <span>
+              Players ativos
+            </span>
+
+            <h2>
+              {data?.ranking
+                ?.length || 0}
+            </h2>
+
+          </div>
+
+          <div className="hero-stat-card">
+
+            <span>
+              Campeões
+            </span>
+
+            <h2>
+              {data?.champions
+                ?.length || 0}
+            </h2>
+
+          </div>
+
+          <div className="hero-stat-card">
+
+            <span>
+              Torneios
+            </span>
+
+            <h2>
+              {data?.banners
+                ?.length || 0}
+            </h2>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* CAROUSEL */}
+
+      {data?.banners?.length >
+        0 && (
+        <section>
+
+          <Carousel
+            slides={
+              data.banners
+            }
+          />
+
+        </section>
+      )}
+
+      {/* CHAMPIONS */}
+
+      <section className="section-block">
+
+        <div className="section-header">
+
+          <div>
+
+            <div className="section-badge">
+
+              <Crown size={14} />
+
+              Hall da Fama
+
             </div>
 
-            <h3>{c.nickname}</h3>
+            <h2>
+              Campeões recentes
+            </h2>
 
-            <p>
-              {c.tournament_name ||
-                "Campeão"}
-            </p>
           </div>
-        ))}
 
-      </div>
+        </div>
 
-      {/* ⚡ GRID */}
-      <div className="home-grid">
+        <div className="champions-grid">
+
+          {(data.champions ||
+            []
+          ).map((c, i) => (
+            <div
+              key={i}
+              className="champion-card"
+            >
+
+              <div className="champion-avatar">
+                {c.nickname?.[0] ||
+                  "?"}
+              </div>
+
+              <h3>
+                {c.nickname}
+              </h3>
+
+              <p>
+                {c.tournament_name ||
+                  "Campeão"}
+              </p>
+
+            </div>
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* GRID */}
+
+      <section className="home-grid">
 
         {/* RANKING */}
-        <Card
+
+        <div
+          className="dashboard-card"
           onClick={() =>
             navigate("/ranking")
           }
-          className="home-card"
         >
-          <h3>Ranking</h3>
 
-          {(data.ranking || [])
-            .slice(0, 3)
-            .map((r, i) => (
-              <p key={i}>
-                #{i + 1} {r.nickname} -{" "}
-                {r.points || 0}
-              </p>
-            ))}
-        </Card>
+          <div className="dashboard-card-icon">
+
+            <Trophy size={22} />
+
+          </div>
+
+          <h3>
+            Ranking
+          </h3>
+
+          <div className="ranking-preview">
+
+            {(data.ranking || [])
+              .slice(0, 5)
+              .map((r, i) => (
+                <div
+                  key={i}
+                  className="ranking-row"
+                >
+
+                  <span>
+                    #{i + 1}
+                  </span>
+
+                  <strong>
+                    {
+                      r.nickname
+                    }
+                  </strong>
+
+                  <p>
+                    {r.points ||
+                      0} pts
+                  </p>
+
+                </div>
+              ))}
+
+          </div>
+
+        </div>
 
         {/* TORNEIOS */}
-        <Card
-          className="home-card highlight"
+
+        <div
+          className="dashboard-card featured"
           onClick={() =>
-            navigate("/tournaments")
+            navigate(
+              "/tournaments"
+            )
           }
         >
-          <h3>Torneios</h3>
+
+          <div className="dashboard-card-icon">
+
+            <Swords size={22} />
+
+          </div>
+
+          <h3>
+            Torneios
+          </h3>
 
           <p>
-            Mostre sua força entre os
-            melhores jogadores da comunidade
+            Acompanhe pairings,
+            standings e brackets
+            em tempo real.
           </p>
-        </Card>
+
+        </div>
 
         {/* LOJA */}
-        <Card
-          className="home-card"
+
+        <div
+          className="dashboard-card"
           onClick={() =>
             window.open(
               "https://hitlegendstcg.lovable.app/",
@@ -134,14 +337,27 @@ export default function Home() {
             )
           }
         >
-          <h3>Loja</h3>
+
+          <div className="dashboard-card-icon">
+
+            <Store size={22} />
+
+          </div>
+
+          <h3>
+            Loja
+          </h3>
 
           <p>
-            Compre cartas e fortaleça seus decks
+            Compre cartas,
+            acessórios e fortaleça
+            seus decks.
           </p>
-        </Card>
 
-      </div>
+        </div>
+
+      </section>
+
     </div>
   );
 }

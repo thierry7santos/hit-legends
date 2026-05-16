@@ -1,5 +1,3 @@
-// src/pages/Dashboard/Tournaments/components/PairingsTab/PairingsTab.jsx
-
 import { useEffect, useState } from "react";
 
 import PairingCard from "../../cards/PairingCard";
@@ -7,23 +5,36 @@ import PairingCard from "../../cards/PairingCard";
 import "./PairingsTab.css";
 
 export default function PairingsTab({
-  pairings = [],
+  pairingsData,
 }) {
-  const [selectedRound, setSelectedRound] =
-    useState(1);
+  const rounds =
+    pairingsData?.rounds || [];
+
+  const currentRound =
+    pairingsData?.currentRound || 1;
+
+  const [
+    selectedRound,
+    setSelectedRound,
+  ] = useState(currentRound);
+
+  /* 🔄 AUTO UPDATE */
 
   useEffect(() => {
-    if (pairings.length > 0) {
+    if (currentRound > 0) {
       setSelectedRound(
-        pairings.length
+        currentRound
       );
     }
-  }, [pairings]);
+  }, [currentRound]);
+
+  /* 🎯 ROUND DATA */
 
   const currentRoundData =
-    pairings.find(
+    rounds.find(
       (round) =>
-        round.round === selectedRound
+        round.round ===
+        `Round ${selectedRound}`
     );
 
   return (
@@ -32,23 +43,6 @@ export default function PairingsTab({
       {/* HEADER */}
 
       <div className="pairings-header">
-
-        <div>
-
-          <div className="pairings-badge">
-            Pairings
-          </div>
-
-          <h2>
-            Rodadas
-          </h2>
-
-          <p>
-            Histórico completo
-            do torneio
-          </p>
-
-        </div>
 
         <div className="round-selector">
 
@@ -76,26 +70,24 @@ export default function PairingsTab({
           <button
             disabled={
               selectedRound ===
-              pairings.length
+              rounds.length
             }
             onClick={() =>
               setSelectedRound(
                 (prev) =>
                   Math.min(
                     prev + 1,
-                    pairings.length
+                    rounds.length
                   )
               )
             }
           >
             →
           </button>
-
+        
         </div>
-
-      </div>
-
-      {/* STATUS */}
+        
+        {/* LIVE */}
 
       {currentRoundData &&
         !currentRoundData.finalized && (
@@ -107,6 +99,8 @@ export default function PairingsTab({
 
           </div>
         )}
+
+      </div>
 
       {/* LIST */}
 

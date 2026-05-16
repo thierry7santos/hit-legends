@@ -1,102 +1,173 @@
-import { useState } from "react";
+//frontend\src\layout\MainLayout.jsx
+
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 
 import {
   Home,
-  User,
   Trophy,
-  Swords,
-  Users,
   Gamepad2,
+  Users,
+  Bell,
   LogOut,
-  Pin,
 } from "lucide-react";
 
 import "./MainLayout.css";
-import bgLogo from "../assets/hit-legends.png";
+
+import logo from "../assets/hit-legends.png";
 
 export default function MainLayout() {
-  const [collapsed, setCollapsed] = useState(true);
-  const [pinned, setPinned] = useState(false);
-
   const { user, logout } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  const isOpen = !collapsed || pinned;
+  const location = useLocation();
+
+  const navigate = useNavigate();
 
   function handleLogout() {
     logout();
-    navigate("/login", { replace: true });
+
+    navigate("/login", {
+      replace: true,
+    });
   }
 
   return (
-    <div className="layout-container">
-      
-      {/* SIDEBAR */}
-      <aside
-        className={`sidebar ${isOpen ? "open" : "closed"}`}
-        style={{ "--sidebar-bg": `url(${bgLogo})` }}
-        onMouseEnter={() => !pinned && setCollapsed(false)}
-        onMouseLeave={() => !pinned && setCollapsed(true)}
-      >
-        <div className="sidebar-effects" />
-        
-        <div className="sidebar-header">
-          <span className="logo">
-            {isOpen ? "Hit Legends" : "HL"}
-          </span>
+    <div className="layout">
 
-          <button onClick={() => setPinned(!pinned)} className="pin-btn">
-            <Pin size={16} />
-          </button>
+      {/* TOPBAR */}
+
+      <header className="topbar">
+
+        <div className="topbar-left">
+
+          <Link
+            to="/"
+            className="brand"
+          >
+            <img
+              src={logo}
+              alt="HitLegends TCG"
+            />
+
+            <span>
+              HitLegends TCG
+            </span>
+          </Link>
+
+          <nav className="navbar">
+
+            <NavItem
+              to="/"
+              icon={<Home size={18} />}
+              label="Home"
+              active={
+                location.pathname === "/"
+              }
+            />
+
+            <NavItem
+              to="/tournaments"
+              icon={<Gamepad2 size={18} />}
+              label="Torneios"
+              active={location.pathname.includes(
+                "/tournaments"
+              )}
+            />
+
+            <NavItem
+              to="/ranking"
+              icon={<Trophy size={18} />}
+              label="Ranking"
+              active={location.pathname.includes(
+                "/ranking"
+              )}
+            />
+
+            <NavItem
+              to="/friends"
+              icon={<Users size={18} />}
+              label="Amigos"
+              active={location.pathname.includes(
+                "/friends"
+              )}
+            />
+
+          </nav>
+
         </div>
 
-        <nav className="nav">
-          <NavItem to="/" icon={<Home size={18} />} label="Home" isOpen={isOpen} active={location.pathname === "/"} />
-          <NavItem to="/profile" icon={<User size={18} />} label="Perfil" isOpen={isOpen} active={location.pathname === "/profile"} />
-          <NavItem to="/ranking" icon={<Trophy size={18} />} label="Ranking" isOpen={isOpen} active={location.pathname === "/ranking"} />
-          <NavItem to="/tournaments" icon={<Gamepad2 size={18} />} label="Torneios" isOpen={isOpen} active={location.pathname === "/tournaments"} />
-          <NavItem to="/matches" icon={<Swords size={18} />} label="Partidas" isOpen={isOpen} active={location.pathname === "/matches"} />
-          <NavItem to="/friends" icon={<Users size={18} />} label="Amigos" isOpen={isOpen} active={location.pathname === "/friends"} />
-        </nav>
-      </aside>
+        <div className="topbar-right">
 
-      {/* MAIN */}
-      <div className="main-area">
-        <header className="topbar">
-          <div />
+          <button className="notification-btn">
 
-          <div className="user-box">
+            <Bell size={18} />
+
+            <span className="notification-dot" />
+
+          </button>
+
+          <Link
+            to="/profile"
+            className="profile-box"
+          >
+
             <div className="avatar">
-              {user?.email?.[0]?.toUpperCase() || "U"}
+              {user?.email?.[0]?.toUpperCase() ||
+                "U"}
             </div>
 
-            <span>{user?.email}</span>
+            <div className="profile-info">
 
-            <button onClick={handleLogout} className="logout-btn">
-              <LogOut size={16} />
-            </button>
-          </div>
-        </header>
+              <span className="profile-name">
+                Perfil
+              </span>
 
-        <main className="main-content">
-          <Outlet />
-        </main>
-      </div>
+              <span className="profile-email">
+                {user?.email}
+              </span>
+
+            </div>
+
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className="logout-btn"
+          >
+            <LogOut size={18} />
+          </button>
+
+        </div>
+
+      </header>
+
+      {/* CONTENT */}
+
+      <main className="page-content">
+        <Outlet />
+      </main>
+
     </div>
   );
 }
 
-function NavItem({ to, icon, label, isOpen, active }) {
+function NavItem({
+  to,
+  icon,
+  label,
+  active,
+}) {
   return (
     <Link
       to={to}
-      className={`nav-item ${active ? "active" : ""}`}
+      className={`nav-item ${
+        active ? "active" : ""
+      }`}
     >
       {icon}
-      {isOpen && <span>{label}</span>}
+
+      <span>{label}</span>
     </Link>
   );
 }

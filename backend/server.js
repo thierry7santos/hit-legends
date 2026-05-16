@@ -3,11 +3,11 @@
 import "dotenv/config";
 
 import express from "express";
+
 import cors from "cors";
 
 import limitlessRoutes from "./routes/limitlessRoutes.js";
 
-import { startLimitlessWorker } from "./workers/limitlessWorker.js";
 import { loadSnapshotsToCache } from "./services/persistence/loadSnapshotsToCache.js";
 
 const app = express();
@@ -38,6 +38,4 @@ app.listen(PORT, async () => {
   } catch (err) {
     console.error(err);
   }
-
-  startLimitlessWorker();
 });
